@@ -181,7 +181,7 @@ load_mrb_file_with_filepath(mrb_state *mrb, mrb_value filepath, mrb_value origfi
   int arena_idx = mrb_gc_arena_save(mrb);
 
   FILE *fp = fopen(fpath, "r");
-  int n = mrb_load_irep(mrb, fp);
+  int n = mrb_read_irep_file(mrb, fp);
   fclose(fp);
 
   mrb_gc_arena_restore(mrb, arena_idx);
