@@ -30,6 +30,24 @@
   #define dprintf(...)     ((void)0)
 #endif
 
+#define GCC_VERSION_SINCE(major, minor, patchlevel)   \
+  (defined(__GNUC__) && !defined(__INTEL_COMPILER) && \
+   ((__GNUC__ > (major)) ||				 \
+    (__GNUC__ == (major) && __GNUC_MINOR__ > (minor)) ||		\
+    (__GNUC__ == (major) && __GNUC_MINOR__ == (minor) && __GNUC_PATCHLEVEL__ >= (patchlevel))))
+#if GCC_VERSION_SINCE(4,3,0)
+#define swap32(x) __builtin_bswap32(x)
+#endif
+#ifndef swap32
+#define swap32(x) ((((x)&0xFF)<<24)		\
+		   |(((x)>>24)&0xFF)		\
+		   |(((x)&0x0000FF00)<<8)	\
+		   |(((x)&0x00FF0000)>>8)  )
+#endif
+#ifndef swap16
+#define swap16(x) ((((x)&0xFF)<<8) | (((x)>>8)&0xFF))
+#endif
+
 static const char toofew_err_msg[] = "too few arguments";
 static const char uu_table[] =
 "`!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_";
@@ -443,6 +461,45 @@ modifiers:
 	  }
         }
         break;
+
+      case 'L':
+	if (p[-1] == '*' || len  > (send - s) / sizeof(uint32_t))
+	  len = (send - s) / sizeof(uint32_t);
+	while (len-- > 0) {
+	  uint32_t tmp;
+	  memcpy(&tmp, s, sizeof(uint32_t));
+	  s += sizeof(uint32_t);
+	  UNPACK_PUSH(mrb_float_value(tmp));
+	}
+	break;
+
+      case 'n':
+	if (p[-1] == '*' || len  > (send - s) / sizeof(uint16_t))
+	  len = (send - s) / sizeof(uint16_t);
+	while (len-- > 0) {
+	  uint16_t tmp;
+	  memcpy(&tmp, s, sizeof(uint16_t));
+#ifndef MRB_ENDIAN_BIG
+	  tmp = swap16(tmp);
+#endif
+	  s += sizeof(uint16_t);
+	  UNPACK_PUSH(mrb_float_value(tmp));
+	}
+	break;
+
+      case 'N':
+	if (p[-1] == '*' || len  > (send - s) / sizeof(uint32_t))
+	  len = (send - s) / sizeof(uint32_t);
+	while (len-- > 0) {
+	  uint32_t tmp;
+	  memcpy(&tmp, s, sizeof(uint32_t));
+#ifndef MRB_ENDIAN_BIG
+	  tmp = swap32(tmp);
+#endif
+	  s += sizeof(uint32_t);
+	  UNPACK_PUSH(mrb_float_value(tmp));
+	}
+	break;
 
       case 'H':
         {
