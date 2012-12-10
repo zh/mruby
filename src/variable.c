@@ -833,6 +833,7 @@ mrb_define_global_const(mrb_state *mrb, const char *name, mrb_value val)
 static mrb_sym
 mrb_gv_alias_name_check(mrb_state *mrb, mrb_sym sym)
 {
+  int ai = mrb_gc_arena_save(mrb);
   const char *const *ptr = mrb_gv_alias_names;
   mrb_value sym0 = mrb_str_new2(mrb, mrb_sym2name(mrb, sym));
 
@@ -848,6 +849,7 @@ mrb_gv_alias_name_check(mrb_state *mrb, mrb_sym sym)
     }
   }
 
+  mrb_gc_arena_restore(mrb, ai);
   return sym;
 }
 
