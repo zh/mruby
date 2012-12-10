@@ -62,6 +62,8 @@
 //#define DISABLE_REQUIRE
 //#define DISABLE_RANDOM
 
+#define DISABLE_GEMS		/* Package Manager mrbgems */
+
 #define INCLUDE_ENCODING
 
 #undef  HAVE_UNISTD_H /* WINDOWS */
