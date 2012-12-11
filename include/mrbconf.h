@@ -62,7 +62,7 @@
 //#define DISABLE_REQUIRE
 //#define DISABLE_RANDOM
 
-#define DISABLE_GEMS		/* Package Manager mrbgems */
+//#define DISABLE_GEMS		/* Package Manager mrbgems */
 
 #define INCLUDE_ENCODING
 

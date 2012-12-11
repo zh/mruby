@@ -10,8 +10,8 @@ export YACC = bison
 MRUBY_ROOT := $(realpath .)
 
 ifeq ($(strip $(ENABLE_GEMS)),)
-  # by default GEMs are deactivated
-  ENABLE_GEMS = false
+  # by default GEMs are activated on iij/mruby
+  ENABLE_GEMS = true
 endif
 
 ifeq ($(strip $(ACTIVE_GEMS)),)
