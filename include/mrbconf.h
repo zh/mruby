@@ -53,7 +53,6 @@
 //#define DISABLE_IO
 //#define DISABLE_DIR
 //#define DISABLE_SOCKET
-//#define DISABLE_PROCESS
 //#define DISABLE_ENV
 //#define DISABLE_DIGEST	/* requires CommonCrypto or OpenSSL */
 //#define DISABLE_PACK
@@ -141,9 +140,6 @@ typedef short mrb_sym;
 #endif
 #ifndef DISABLE_SOCKET
 #define ENABLE_SOCKET
-#endif
-#ifndef DISABLE_PROCESS
-#define ENABLE_PROCESS
 #endif
 #ifndef DISABLE_ENV
 #define ENABLE_ENV
