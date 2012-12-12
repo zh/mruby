@@ -51,7 +51,6 @@
 //#define DISABLE_STRUCT	/* Struct class */
 //#define DISABLE_STDIO		/* use of stdio */
 //#define DISABLE_IO
-//#define DISABLE_DIR
 //#define DISABLE_SOCKET
 //#define DISABLE_ENV
 //#define DISABLE_DIGEST	/* requires CommonCrypto or OpenSSL */
@@ -134,9 +133,6 @@ typedef short mrb_sym;
 #endif
 #ifndef DISABLE_IO
 #define ENABLE_IO
-#endif
-#ifndef DISABLE_DIR
-#define ENABLE_DIR
 #endif
 #ifndef DISABLE_SOCKET
 #define ENABLE_SOCKET

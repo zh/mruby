@@ -6,6 +6,7 @@
 
 #include "mruby.h"
 #include "mruby/class.h"
+#include "mruby/data.h"
 #include "mruby/string.h"
 #include "mruby/ext/io.h"
 #include <sys/types.h>
@@ -17,7 +18,6 @@
 #include <stdlib.h>
 #include <signal.h>
 
-#ifdef ENABLE_DIR
 struct mrb_dir {
   DIR *dir;
 };
@@ -203,7 +203,7 @@ mrb_dir_tell(mrb_state *mrb, mrb_value self)
 }
 
 void
-mrb_init_dir(mrb_state *mrb)
+mrb_dir_gem_init(mrb_state *mrb)
 {
   struct RClass *d;
 
@@ -220,5 +220,3 @@ mrb_init_dir(mrb_state *mrb)
   mrb_define_method(mrb, d, "seek", mrb_dir_seek, ARGS_REQ(1));
   mrb_define_method(mrb, d, "tell", mrb_dir_tell, ARGS_NONE());
 }
-
-#endif /* ENABLE_DIR */
