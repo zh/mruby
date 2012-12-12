@@ -2,6 +2,7 @@
 
 mruby に対して、主に UNIX 環境に依存する機能を追加した fork です。
 
+(English translation is under way: https://github.com/iij/mruby/wiki/README.md.en )
 
 # 拡張部分
 
