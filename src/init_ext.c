@@ -12,7 +12,6 @@ void mrb_init_io(mrb_state *mrb);
 void mrb_init_file(mrb_state *mrb);
 void mrb_init_socket(mrb_state *mrb);
 void mrb_init_dir(mrb_state *mrb);
-void mrb_init_process(mrb_state *mrb);
 void mrb_init_digest(mrb_state *mrb);
 void mrb_init_env(mrb_state *mrb);
 void mrb_init_pack(mrb_state *mrb);
@@ -39,9 +38,6 @@ mrb_init_ext(mrb_state *mrb)
 #endif
 #ifdef ENABLE_DIR
   mrb_init_dir(mrb); DONE;
-#endif
-#ifdef ENABLE_PROCESS
-  mrb_init_process(mrb); DONE;
 #endif
 #ifdef ENABLE_DIGEST
   mrb_init_digest(mrb); DONE;
