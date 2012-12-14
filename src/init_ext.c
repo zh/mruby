@@ -13,7 +13,6 @@ void mrb_init_file(mrb_state *mrb);
 void mrb_init_socket(mrb_state *mrb);
 void mrb_init_digest(mrb_state *mrb);
 void mrb_init_env(mrb_state *mrb);
-void mrb_init_pack(mrb_state *mrb);
 void mrb_init_syslog(mrb_state *mrb);
 void mrb_init_random(mrb_state *mrb);
 void mrb_init_mrblib_ext(mrb_state*);
@@ -40,9 +39,6 @@ mrb_init_ext(mrb_state *mrb)
 #endif
 #ifdef ENABLE_ENV
   mrb_init_env(mrb); DONE;
-#endif
-#ifdef ENABLE_PACK
-  mrb_init_pack(mrb); DONE;
 #endif
 #ifdef ENABLE_SYSLOG
   mrb_init_syslog(mrb); DONE;
