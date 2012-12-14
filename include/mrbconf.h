@@ -54,7 +54,6 @@
 //#define DISABLE_SOCKET
 //#define DISABLE_ENV
 //#define DISABLE_DIGEST	/* requires CommonCrypto or OpenSSL */
-//#define DISABLE_PACK
 //#define DISABLE_SYSLOG	/* requires Syslog */
 //#define DISABLE_ERRNO
 //#define DISABLE_REQUIRE
@@ -142,9 +141,6 @@ typedef short mrb_sym;
 #endif
 #ifndef DISABLE_DIGEST
 #define ENABLE_DIGEST
-#endif
-#ifndef DISABLE_PACK
-#define ENABLE_PACK
 #endif
 #ifndef DISABLE_SYSLOG
 #define ENABLE_SYSLOG
