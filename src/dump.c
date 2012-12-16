@@ -568,6 +568,19 @@ dump_rite_header(mrb_state *mrb, int top, FILE* fp, uint32_t rbds)
   return MRB_DUMP_OK;
 }
 
+static mrb_value
+dump_rite_header_str(mrb_state *mrb, int top, uint32_t rbds)
+{
+  int rc = MRB_DUMP_OK;
+  rite_file_header file_header;
+
+  rc = calc_rite_file_header(mrb, top, rbds, &file_header);
+  if (rc != MRB_DUMP_OK)
+    return mrb_nil_value();
+
+  return mrb_str_new(mrb, (char*)&file_header, (int)sizeof(file_header));
+}
+
 static int
 write_irep_record(mrb_state *mrb, int irep_no, char* bin, uint32_t *rlen, int type)
 {
@@ -783,4 +796,83 @@ mrb_bdump_irep(mrb_state *mrb, int n, FILE *f,const char *initname)
   mrb_free(mrb, buf);
 
   return rc;
+}
+
+
+static mrb_value
+dump_irep_record_str(mrb_state *mrb, int irep_no, uint32_t *rlen)
+{
+  int rc;
+  char *buf;
+  uint32_t irep_record_size;
+  mrb_irep *irep = mrb->irep[irep_no];
+
+  if (irep == NULL)
+    return mrb_nil_value();
+
+  /* buf alloc */
+  irep_record_size = get_irep_record_size(mrb, irep_no, DUMP_TYPE_HEX);
+  if (irep_record_size == 0)
+    return mrb_nil_value();
+
+  buf = (char*) mrb_calloc(mrb, 1, irep_record_size);
+  if (buf == NULL)
+    return mrb_nil_value();
+
+  rc = write_irep_record(mrb, irep_no, buf, rlen, DUMP_TYPE_HEX);
+  if (rc != MRB_DUMP_OK) {
+    mrb_free(mrb, buf);
+    return mrb_nil_value();
+  }
+
+  return mrb_str_new(mrb, buf, (int)irep_record_size);
+}
+
+mrb_value
+mrb_dump_irep_str(mrb_state *mrb, int top, int debug)
+{
+  int rc;
+  uint32_t rbds=0; /* size of Rite Binary Data */
+  uint32_t rlen=0; /* size of irep record */
+  int irep_no;
+  mrb_value bin = mrb_str_new2(mrb, "");
+  mrb_value str;
+
+  if (mrb == NULL || top < 0 || top >= mrb->irep_len) {
+    mrb_raise(mrb, E_RUNTIME_ERROR, "invalid argument of mrb_dump_irep_str");
+    return mrb_nil_value();
+  }
+
+  if (debug) {
+    for (irep_no=top; irep_no<mrb->irep_len; irep_no++) {
+      if ((rc = dump_debug_info(mrb, irep_no)) != MRB_DUMP_OK) {
+        mrb_raise(mrb, E_RUNTIME_ERROR, "mrb_dump_irep_str failed.");
+        return mrb_nil_value();
+      }
+    }
+  }
+
+  for (irep_no=top; irep_no<mrb->irep_len; irep_no++) {
+    str = dump_irep_record_str(mrb, irep_no, &rlen);
+    if (mrb_nil_p(str)) {
+      mrb_raise(mrb, E_RUNTIME_ERROR, "mrb_dump_irep_str failed.");
+      return mrb_nil_value();
+    }
+    bin = mrb_str_append(mrb, bin, str);
+
+    rbds += rlen;
+  }
+
+  /* end of file */
+  bin = mrb_str_append(mrb, bin, mrb_str_new(mrb, "00000000", 8));
+
+  /* header */
+  str = dump_rite_header_str(mrb, top, rbds);
+  if (mrb_nil_p(str)) {
+    mrb_raise(mrb, E_RUNTIME_ERROR, "mrb header calc failed");
+    return mrb_nil_value();
+  }
+  bin = mrb_str_append(mrb, str, bin);
+
+  return bin;
 }

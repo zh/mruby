@@ -23,6 +23,8 @@ mrb_value mrb_load_irep_file(mrb_state*,FILE*);
 
 int mrb_bdump_irep(mrb_state *mrb, int n, FILE *f,const char *initname);
 
+mrb_value mrb_dump_irep_str(mrb_state*,int,int);
+
 /* dump type */
 #define DUMP_TYPE_CODE 0
 #define DUMP_TYPE_BIN  1
