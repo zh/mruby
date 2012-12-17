@@ -34,6 +34,7 @@ struct _args {
   int mrbfile      : 1;
   int check_syntax : 1;
   int verbose      : 1;
+  int safetrace    : 1;
   int argc;
   char** argv;
 #ifdef ENABLE_REQUIRE
@@ -57,6 +58,7 @@ usage(const char *name)
   "-rlibrary    require the library, before executing your script",
 #endif /* ENABLE_REQUIRE */
   "-v           print version number, then run in verbose mode",
+  "--safetrace  don't allocate more memory while showing backtrace",
   "--verbose    run in verbose mode",
   "--version    print the version",
   "--copyright  print the copyright",
@@ -152,7 +154,11 @@ append_cmdline:
       args->verbose = 1;
       break;
     case '-':
-      if (strcmp((*argv) + 2, "version") == 0) {
+      if (strcmp((*argv) + 2, "safetrace") == 0) {
+        args->safetrace = 1;
+        break;
+      }
+      else if (strcmp((*argv) + 2, "version") == 0) {
         mrb_show_version(mrb);
         exit(0);
       }
@@ -204,20 +210,86 @@ cleanup(mrb_state *mrb, struct _args *args)
 }
 
 static void
-showcallinfo(mrb_state *mrb)
+inspect_args(mrb_state *mrb, char *buf, size_t bufsize, const char *method, const mrb_callinfo *ci, const mrb_value *stbase)
 {
-  mrb_callinfo *ci;
+  const mrb_value *stack;
+  mrb_value str;
+  int bi, i, n;
+
+  if (ci->acc >= 0)
+    stack = &stbase[ci->stackidx + ci->acc];
+  else
+    stack = &stbase[ci->stackidx + 2];
+
+  if (method != NULL) {
+    str = mrb_funcall(mrb, stack[0], "inspect", 0);
+    n = RSTRING_LEN(str);
+    if (n > 32)
+      n = 32;
+    bi = snprintf(buf, bufsize, ": %.*s.%s", n, RSTRING_PTR(str), method);
+  } else {
+    bi = snprintf(buf, bufsize, ": yield");
+  }
+  if (ci->argc < 1)
+    return;
+
+  bi += snprintf(buf+bi, bufsize-bi, "(");
+  for (i=1; i < ci->argc+1; i++) {
+    str = mrb_funcall(mrb, stack[i], "inspect", 0);
+    n = RSTRING_LEN(str);
+    if (n > 32)
+      n = 32;
+    if (i > 1)
+      bi += snprintf(buf+bi, bufsize-bi, ", ");
+    bi += snprintf(buf+bi, bufsize-bi, "%.*s", n, RSTRING_PTR(str));
+  }
+  if (bi + 2 < bufsize) {
+    snprintf(buf+bi, bufsize-bi, ")");
+  } else {
+    /* overflow */
+    const char dotdotdot[] = "...)";
+    memcpy(buf+bufsize-sizeof(dotdotdot), dotdotdot, sizeof(dotdotdot));
+  }
+}
+
+static void
+showcallinfo(mrb_state *mrb, int safe)
+{
+  mrb_callinfo *ci, *cibase;
+  mrb_value *stbase;
   mrb_int ciidx;
   const char *filename, *method, *sep;
   int i, line;
+  int copied = 0;
 
   printf("trace:\n");
   ciidx = mrb_fixnum(mrb_obj_iv_get(mrb, mrb->exc, mrb_intern(mrb, "ciidx")));
   if (ciidx >= mrb->ciend - mrb->cibase)
     ciidx = 10; /* ciidx is broken... */
 
+  if (!safe) {
+    /* preserve them to call "#inspect" later */
+    int stsize = mrb->stend - mrb->stbase;
+    cibase = malloc(sizeof(mrb_callinfo) * (ciidx + 1));
+    stbase = malloc(sizeof(mrb_value) * stsize);
+    if (cibase != NULL && stbase != NULL) {
+      copied = 1;
+      memcpy(cibase, mrb->cibase, sizeof(mrb_callinfo) * (ciidx + 1));
+      memcpy(stbase, mrb->stbase, sizeof(mrb_value) * stsize);
+    } else {
+      printf("warning: memory exhausted - cannot show arguments\n");
+      free(cibase);
+      free(stbase);
+      cibase = mrb->cibase;
+      stbase = mrb->stbase;
+    }
+  } else {
+    cibase = mrb->cibase;
+    stbase = mrb->stbase;
+  }
+
   for (i = ciidx; i >= 0; i--) {
-    ci = &mrb->cibase[i];
+    ci = &cibase[i];
     filename = "(unknown)";
     line = -1;
 
@@ -232,7 +304,7 @@ showcallinfo(mrb_state *mrb)
 	mrb_code *pc;
 
 	if (i+1 <= ciidx) {
-	  pc = mrb->cibase[i+1].pc;
+	  pc = cibase[i+1].pc;
 	}
 	else {
 	  pc = (mrb_code*)mrb_voidp(mrb_obj_iv_get(mrb, mrb->exc, mrb_intern(mrb, "lastpc")));
@@ -251,24 +323,38 @@ showcallinfo(mrb_state *mrb)
     if (method) {
       const char *cn = mrb_class_name(mrb, ci->proc->target_class);
       const char *block_in = "";
+      char args[128];
 
-      if (i > 1 && !mrb_nil_p(mrb->stbase[ci->stackidx+1+ci[-1].argc])) {
+      if (i > 1 && !mrb_nil_p(stbase[ci->stackidx+1+ci[-1].argc])) {
         block_in = "block in ";
       }
 
+      args[0] = '\0';
+      if (i > 0 && copied) {
+        if (block_in[0])
+          inspect_args(mrb, args, sizeof(args), NULL, ci, stbase);
+        else
+          inspect_args(mrb, args, sizeof(args), method, ci, stbase);
+      }
+    
       if (cn) {
-	printf("\t[%d] %s:%d:in `%s%s%s%s'\n",
-	       i, filename, line, block_in, cn, sep, method);
+	printf("\t[%d] %s:%d:in `%s%s%s%s'%s\n",
+	       i, filename, line, block_in, cn, sep, method, args);
       }
       else {
-	printf("\t[%d] %s:%d:in `%s%s'\n",
-	       i, filename, line, block_in, method);
+	printf("\t[%d] %s:%d:in `%s%s'%s\n",
+	       i, filename, line, block_in, method, args);
       }
     }
     else {
       printf("\t[%d] %s:%d\n",
 	     i, filename, line);
     }
+  }
+
+  if (copied) {
+    free(cibase);
+    free(stbase);
   }
 }
 
@@ -335,7 +421,7 @@ main(int argc, char **argv)
       mrb_run(mrb, mrb_proc_new(mrb, mrb->irep[n]), mrb_top_self(mrb));
       n = 0;
       if (mrb->exc) {
-        showcallinfo(mrb);
+        showcallinfo(mrb, args.safetrace);
         p(mrb, mrb_obj_value(mrb->exc));
         n = -1;
       }
@@ -363,7 +449,7 @@ main(int argc, char **argv)
     mrbc_context_free(mrb, c);
     if (mrb->exc) {
       if (!mrb_undef_p(v)) {
-        showcallinfo(mrb);
+        showcallinfo(mrb, args.safetrace);
         p(mrb, mrb_obj_value(mrb->exc));
       }
       n = -1;
