@@ -250,14 +250,19 @@ showcallinfo(mrb_state *mrb)
     method = mrb_sym2name(mrb, ci->mid);
     if (method) {
       const char *cn = mrb_class_name(mrb, ci->proc->target_class);
-    
+      const char *block_in = "";
+
+      if (i > 1 && !mrb_nil_p(mrb->stbase[ci->stackidx+1+ci[-1].argc])) {
+        block_in = "block in ";
+      }
+
       if (cn) {
-	printf("\t[%d] %s:%d:in %s%s%s\n",
-	       i, filename, line, cn, sep, method);
+	printf("\t[%d] %s:%d:in `%s%s%s%s'\n",
+	       i, filename, line, block_in, cn, sep, method);
       }
       else {
-	printf("\t[%d] %s:%d:in %s\n",
-	       i, filename, line, method);
+	printf("\t[%d] %s:%d:in `%s%s'\n",
+	       i, filename, line, block_in, method);
       }
     }
     else {
