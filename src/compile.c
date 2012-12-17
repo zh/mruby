@@ -1,22 +1,17 @@
+/*
+** compile.c
+**
+** See Copyright Notice in mruby.h
+*/
 
 #include "mruby.h"
 
-#include "mruby/data.h"
 #include "mruby/string.h"
 #include "mruby/dump.h"
 #include "mruby/proc.h"
 #include "mruby/compile.h"
-#include "mruby/variable.h"
-#include "mruby/array.h"
-#include "mruby/numeric.h"
 
 #include "opcode.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <sys/types.h>
-#include <sys/param.h>
-#include <unistd.h>
-#include <libgen.h>
 
 mrb_value
 mrb_yield_internal(mrb_state *mrb, mrb_value b, int argc, mrb_value *argv, mrb_value self, struct RClass *c);
