@@ -12,7 +12,7 @@ MAKE = ENV['MAKE'] || 'make'
 MRUBY_ROOT = ENV['MRUBY_ROOT'] || File.expand_path(File.dirname(__FILE__))
 
 # by default GEMs are deactivated
-ENABLE_GEMS = false
+ENABLE_GEMS = true
 
 # the default file which contains the active GEMs
 ACTIVE_GEMS = File.join(File.dirname(__FILE__), 'mrbgems', 'GEMS.active')
@@ -35,7 +35,7 @@ else  # including 'debug'
 end
 LDFLAGS = [ENV['LDFLAGS']]
 
-CFLAGS << "-Wall" << "-Werror-implicit-function-declaration" << "-I#{MRUBY_ROOT}/include"
+CFLAGS << "-Wall" << "-Werror-implicit-function-declaration" << "-I#{MRUBY_ROOT}/include" << "-I#{MRUBY_ROOT}/src"
 if ENV['OS'] == 'Windows_NT'
   MAKE_FLAGS = "--no-print-directory CC=#{CC} LL=#{LL} CFLAGS='#{CFLAGS.join(' ')}' LDFLAGS='#{LDFLAGS.join(' ')}' ENABLE_GEMS='#{ENABLE_GEMS}' MRUBY_ROOT='#{MRUBY_ROOT}'"
 else
