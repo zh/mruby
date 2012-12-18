@@ -3090,7 +3090,7 @@ nextc(parser_state *p)
       return -1;
     }
     else {
-      c = *p->s++;
+      c = (unsigned char)*p->s++;
     }
     if (c == '\n') {
       // must understand heredoc
