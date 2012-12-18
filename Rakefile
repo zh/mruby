@@ -34,12 +34,13 @@ else  # including 'debug'
   CFLAGS = if e then [e] else ['-g', '-O3'] end
 end
 LDFLAGS = [ENV['LDFLAGS']]
+LIBS = '-lm -lcrypto'
 
 CFLAGS << "-Wall" << "-Werror-implicit-function-declaration" << "-I#{MRUBY_ROOT}/include" << "-I#{MRUBY_ROOT}/src"
 if ENV['OS'] == 'Windows_NT'
-  MAKE_FLAGS = "--no-print-directory CC=#{CC} LL=#{LL} CFLAGS='#{CFLAGS.join(' ')}' LDFLAGS='#{LDFLAGS.join(' ')}' ENABLE_GEMS='#{ENABLE_GEMS}' MRUBY_ROOT='#{MRUBY_ROOT}' LIBS='-lm -lcrypto'"
+  MAKE_FLAGS = "--no-print-directory CC=#{CC} LL=#{LL} AR=#{AR} YACC=#{YACC} CFLAGS='#{CFLAGS.join(' ')}' LDFLAGS='#{LDFLAGS.join(' ')}' ENABLE_GEMS='#{ENABLE_GEMS}' MRUBY_ROOT='#{MRUBY_ROOT}' LIBS='#{LIBS}'"
 else
-  MAKE_FLAGS = "--no-print-directory CC='#{CC}' LL='#{LL}' CFLAGS='#{CFLAGS.join(' ')}' LDFLAGS='#{LDFLAGS.join(' ')}' ENABLE_GEMS='#{ENABLE_GEMS}' MRUBY_ROOT='#{MRUBY_ROOT}' LIBS='-lm -lcrypto'"
+  MAKE_FLAGS = "--no-print-directory CC='#{CC}' LL='#{LL}' AR=#{AR} YACC=#{YACC} CFLAGS='#{CFLAGS.join(' ')}' LDFLAGS='#{LDFLAGS.join(' ')}' ENABLE_GEMS='#{ENABLE_GEMS}' MRUBY_ROOT='#{MRUBY_ROOT}' LIBS='#{LIBS}'"
 end
 
 
@@ -94,7 +95,9 @@ desc "show build config summary"
 task :showconfig do
   puts "  CC = #{CC}"
   puts "  LL = #{LL}"
+  puts "  AR = #{AR}"
   puts "  MAKE = #{MAKE}"
+  puts "  YACC = #{YACC}"
   puts ""
   puts "  CFLAGS = #{CFLAGS.join(' ')}"
   puts "  LDFLAGS = #{LDFLAGS.join(' ')}"
