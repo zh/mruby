@@ -38,9 +38,9 @@ LIBS = '-lm -lcrypto'
 
 CFLAGS << "-Wall" << "-Werror-implicit-function-declaration" << "-I#{MRUBY_ROOT}/include" << "-I#{MRUBY_ROOT}/src"
 if ENV['OS'] == 'Windows_NT'
-  MAKE_FLAGS = "--no-print-directory CC=#{CC} LL=#{LL} AR=#{AR} YACC=#{YACC} CFLAGS='#{CFLAGS.join(' ')}' LDFLAGS='#{LDFLAGS.join(' ')}' ENABLE_GEMS='#{ENABLE_GEMS}' MRUBY_ROOT='#{MRUBY_ROOT}' LIBS='#{LIBS}'"
+  MAKE_FLAGS = "--no-print-directory CC='#{CC}' LL='#{LL}' AR='#{AR}' YACC='#{YACC}' CFLAGS='#{CFLAGS.join(' ')}' LDFLAGS='#{LDFLAGS.join(' ')}' ENABLE_GEMS='#{ENABLE_GEMS}' MRUBY_ROOT='#{MRUBY_ROOT}' LIBS='#{LIBS}'"
 else
-  MAKE_FLAGS = "--no-print-directory CC='#{CC}' LL='#{LL}' AR=#{AR} YACC=#{YACC} CFLAGS='#{CFLAGS.join(' ')}' LDFLAGS='#{LDFLAGS.join(' ')}' ENABLE_GEMS='#{ENABLE_GEMS}' MRUBY_ROOT='#{MRUBY_ROOT}' LIBS='#{LIBS}'"
+  MAKE_FLAGS = "--no-print-directory CC='#{CC}' LL='#{LL}' AR='#{AR}' YACC='#{YACC}' CFLAGS='#{CFLAGS.join(' ')}' LDFLAGS='#{LDFLAGS.join(' ')}' ENABLE_GEMS='#{ENABLE_GEMS}' MRUBY_ROOT='#{MRUBY_ROOT}' LIBS='#{LIBS}'"
 end
 
 
