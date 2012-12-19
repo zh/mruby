@@ -36,7 +36,12 @@ end
 LDFLAGS = [ENV['LDFLAGS']]
 LIBS = [ENV['LIBS'] || '-lm -lcrypto']
 
+if !ENABLE_GEMS
+  CFLAGS << "-DDISABLE_GEMS"
+end
+
 CFLAGS << "-Wall" << "-Werror-implicit-function-declaration" << "-I#{MRUBY_ROOT}/include" << "-I#{MRUBY_ROOT}/src"
+
 if ENV['OS'] == 'Windows_NT'
   MAKE_FLAGS = "--no-print-directory CC=#{CC} LL=#{LL} AR=#{AR} YACC=#{YACC} CFLAGS=\"#{CFLAGS.join(' ')}\" LDFLAGS=\"#{LDFLAGS.join(' ')}\" LIBS=\"#{LIBS.join(' ')}\" ENABLE_GEMS=\"#{ENABLE_GEMS}\" MRUBY_ROOT=\"#{MRUBY_ROOT}\""
 else
@@ -96,10 +101,12 @@ task :showconfig do
   puts "  CC = #{CC}"
   puts "  LL = #{LL}"
   puts "  AR = #{AR}"
-  puts "  MAKE = #{MAKE}"
   puts "  YACC = #{YACC}"
+  puts "  MAKE = #{MAKE}"
   puts ""
   puts "  CFLAGS = #{CFLAGS.join(' ')}"
   puts "  LDFLAGS = #{LDFLAGS.join(' ')}"
   puts "  LIBS = #{LIBS.join(' ')}"
+  puts ""
+  puts "  ENABLE_GEMS = #{ENABLE_GEMS}"
 end
