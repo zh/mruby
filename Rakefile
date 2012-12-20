@@ -1,12 +1,21 @@
 # Build description.
 # basic build file for mruby
 
+def default_make
+  begin
+    `gmake -v`
+  rescue
+    return 'make'
+  end
+  return 'gmake'
+end
+
 # compiler, linker (gcc), archiver, parser generator
 CC = ENV['CC'] || 'gcc'
 LL = ENV['LL'] || 'gcc'
 AR = ENV['AR'] || 'ar'
 YACC = ENV['YACC'] || 'bison'
-MAKE = ENV['MAKE'] || 'make'
+MAKE = ENV['MAKE'] || default_make
 
 # mruby source root path
 MRUBY_ROOT = ENV['MRUBY_ROOT'] || File.expand_path(File.dirname(__FILE__))
