@@ -11,9 +11,9 @@ def default_make
 end
 
 # compiler, linker (gcc), archiver, parser generator
-CC = ENV['CC'] || 'gcc'
-LL = ENV['LL'] || 'gcc'
-AR = ENV['AR'] || 'ar'
+CC   = ENV['CC']   || 'gcc'
+LL   = ENV['LL']   || 'gcc'
+AR   = ENV['AR']   || 'ar'
 YACC = ENV['YACC'] || 'bison'
 MAKE = ENV['MAKE'] || default_make
 
@@ -24,10 +24,10 @@ MRUBY_ROOT = ENV['MRUBY_ROOT'] || File.expand_path(File.dirname(__FILE__))
 ENABLE_GEMS = true
 
 # the default file which contains the active GEMs
-ACTIVE_GEMS = File.join(File.dirname(__FILE__), 'mrbgems', 'GEMS.active')
+ACTIVE_GEMS = ENV['ACTIVE_GEMS'] || File.join(MRUBY_ROOT, '/mrbgems/GEMS.active')
 
 # default compile option
-COMPILE_MODE = :debug
+COMPILE_MODE = ENV['COMPILE_MODE'] || :debug
 
 
 ##############################
@@ -43,9 +43,12 @@ else  # including 'debug'
   CFLAGS = if e then [e] else ['-g', '-O3'] end
 end
 LDFLAGS = [ENV['LDFLAGS']]
-LIBS = [ENV['LIBS'] || '-lm -lcrypto']
+LIBS    = [ENV['LIBS'] || '-lm -lcrypto']
 
-if !ENABLE_GEMS
+if ENABLE_GEMS
+  require './mrbgems/build_tasks'
+  Rake::Task[:load_mrbgems_flags].invoke
+else
   CFLAGS << "-DDISABLE_GEMS"
 end
 
@@ -58,7 +61,6 @@ else
 end
 
 
-
 ##############################
 # internal variables
 
@@ -69,9 +71,6 @@ CAT = ENV['CAT'] ||= 'cat'
 
 ##############################
 # generic build targets, rules
-if ENABLE_GEMS
-  require './mrbgems/build_tasks'
-end
 
 task :default => :all
 

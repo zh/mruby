@@ -2111,6 +2111,7 @@ scope_new(mrb_state *mrb, codegen_scope *prev, node *lv)
   if (p->filename) {
     p->lines = (short*)mrb_malloc(mrb, sizeof(short)*p->icapa);
   }
+  p->lineno = prev->lineno;
   return p;
 }
 
