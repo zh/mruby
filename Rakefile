@@ -2,7 +2,7 @@
 # basic build file for mruby
 
 def default_make
-  `which gmake` == "" ? 'make' : 'gmake'
+  `which gmake 2>/dev/null` == "" ? 'make' : 'gmake'
 end
 
 # compiler, linker (gcc), archiver, parser generator
