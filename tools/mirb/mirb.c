@@ -12,6 +12,10 @@
 #include <mruby/proc.h>
 #include <mruby/data.h>
 #include <mruby/compile.h>
+#ifdef ENABLE_READLINE
+#include <readline/readline.h>
+#include <readline/history.h>
+#endif
 
 #ifdef ENABLE_REQUIRE
 #include "mruby/array.h"
@@ -150,10 +154,12 @@ print_cmdline(int code_block_open)
 int
 main(int argc, char **argv)
 {
-  int last_char;
   char ruby_code[1024] = { 0 };
   char last_code_line[1024] = { 0 };
+#ifndef ENABLE_READLINE
+  int last_char;
   int char_index;
+#endif
   mrbc_context *cxt;
   struct mrb_parser_state *parser;
   mrb_state *mrb;
@@ -193,6 +199,7 @@ main(int argc, char **argv)
 
 
   while (TRUE) {
+#ifndef ENABLE_READLINE
     print_cmdline(code_block_open);
 
     char_index = 0;
@@ -206,6 +213,12 @@ main(int argc, char **argv)
     }
 
     last_code_line[char_index] = '\0';
+#else
+    char* line = readline(code_block_open ? "* " : "> ");
+    strncat(last_code_line, line, sizeof(last_code_line)-1);
+    add_history(line);
+    free(line);
+#endif
 
     if ((strcmp(last_code_line, "quit") == 0) || (strcmp(last_code_line, "exit") == 0)) {
       if (!code_block_open) {
