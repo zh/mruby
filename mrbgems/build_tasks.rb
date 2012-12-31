@@ -98,12 +98,29 @@ __EOF__
   end
 end
 
+def fetch_gem(gempath)
+  gemname = File.basename(gempath)
+  IO.readlines(GEMS_DATABASE).each { |line|
+    name, url, rev = line.split(',').map{|s| s.strip }
+    rev = 'master' unless rev
+    if name == gemname
+      sh "cd #{File.dirname gempath} && git clone #{url} && git checkout #{rev}"
+      break
+    end
+  }
+end
+
 def for_each_gem(&block)
   IO.readlines(ACTIVE_GEMS).map { |line|
     path = line.chomp
     if not File.exist?(path)
-      path2 = File.join MRUBY_ROOT, 'mrbgems', 'g', path
-      path = path2 if File.exist? path2
+      gempath = File.join MRUBY_ROOT, 'mrbgems', 'g', path
+      if File.exist? gempath
+        path = gempath
+      else
+        fetch_gem(gempath)
+        path = gempath
+      end
     end
     gemname = File.basename(path)
     escaped_gemname = gemname.gsub(/-/, '_')

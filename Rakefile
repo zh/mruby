@@ -20,6 +20,7 @@ ENABLE_GEMS = true
 
 # the default file which contains the active GEMs
 ACTIVE_GEMS = ENV['ACTIVE_GEMS'] || File.join(MRUBY_ROOT, '/mrbgems/GEMS.active')
+GEMS_DATABASE = File.join MRUBY_ROOT, 'mrbgems', 'GEMS.db'
 
 # default compile option
 COMPILE_MODE = ENV['COMPILE_MODE'] || :debug
