@@ -1,3 +1,4 @@
 mruby-dir, git://github.com/iij/mruby-dir.git
 mruby-mtest, git://github.com/iij/mruby-mtest.git
 mruby-syslog, git://github.com/iij/mruby-syslog.git
+mruby-pack, git://github.com/iij/mruby-pack.git
