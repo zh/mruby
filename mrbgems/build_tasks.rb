@@ -21,6 +21,7 @@ end
 
 task :load_mrbgems_flags do
   for_each_gem do |path, gemname|
+    fetch_gem(gemname)
     sh "#{MAKE} gem-flags -C #{path} #{gem_make_flags}"
     CFLAGS << File.read("#{path}/gem-cflags.tmp").chomp
     LDFLAGS << File.read("#{path}/gem-ldflags.tmp").chomp
@@ -98,16 +99,22 @@ __EOF__
   end
 end
 
-def fetch_gem(gempath)
-  gemname = File.basename(gempath)
+def fetch_gem(gemname)
+  return if File.exist?(gemname)
+  gempath = File.join MRUBY_ROOT, 'mrbgems', 'g', gemname
+  return if File.exist?(gempath)
+
+  db = {}
   IO.readlines(GEMS_DATABASE).each { |line|
     name, url, rev = line.split(',').map{|s| s.strip }
     rev = 'master' unless rev
-    if name == gemname
-      sh "cd #{File.dirname gempath} && git clone #{url} && git checkout #{rev}"
-      break
-    end
+    db[name] = [url, rev]
   }
+
+  url, rev = db[gemname]
+  if url && url != ''
+    sh "cd #{File.dirname gempath} && git clone #{url} && git checkout #{rev}"
+  end
 end
 
 def for_each_gem(&block)
@@ -118,7 +125,7 @@ def for_each_gem(&block)
       if File.exist? gempath
         path = gempath
       else
-        fetch_gem(gempath)
+        fetch_gem(path)
         path = gempath
       end
     end
