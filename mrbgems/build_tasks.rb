@@ -13,15 +13,39 @@ def gem_make_flags
   end
 end
 
+task :mrbgems_download do
+  for_each_gem do |path, gemname|
+    next if File.exist?(path)
+    next if path.index(File.join(MRUBY_ROOT, 'mrbgems', 'g')) != 0
+    url, rev = mrbgem_url(path, gemname)
+    next if url.nil? or rev.nil?
+
+    sh "cd #{File.dirname path} && git clone #{url} && cd #{path} && git checkout #{rev}"
+  end
+end
+
+task :mrbgems_update do
+  for_each_gem do |path, gemname|
+    next if path.index(File.join(MRUBY_ROOT, 'mrbgems', 'g')) != 0
+    url, rev = mrbgem_url(path, gemname)
+    next if url.nil? or rev.nil?
+
+    if File.exist?(File.join(path, '.git'))
+      sh "cd #{path} && git pull && git checkout #{rev}"
+    else
+      sh "cd #{File.dirname path} && git clone #{url} && cd #{path} && git checkout #{rev}"
+    end
+  end
+end
+
 task :mrbgems_all => ["#{GEM_INIT}.a", :mrbgems_generate_gem_makefile_list] do
   for_each_gem do |path, gemname|
     sh "#{MAKE} -C #{path} #{gem_make_flags}"
   end
 end
 
-task :load_mrbgems_flags do
+task :load_mrbgems_flags => :mrbgems_download do
   for_each_gem do |path, gemname|
-    fetch_gem(gemname)
     sh "#{MAKE} gem-flags -C #{path} #{gem_make_flags}"
     CFLAGS << File.read("#{path}/gem-cflags.tmp").chomp
     LDFLAGS << File.read("#{path}/gem-ldflags.tmp").chomp
@@ -99,22 +123,15 @@ __EOF__
   end
 end
 
-def fetch_gem(gemname)
-  return if File.exist?(gemname)
-  gempath = File.join MRUBY_ROOT, 'mrbgems', 'g', gemname
-  return if File.exist?(gempath)
-
-  db = {}
+def mrbgem_url(path, gemname)
   IO.readlines(GEMS_DATABASE).each { |line|
     name, url, rev = line.split(',').map{|s| s.strip }
     rev = 'master' unless rev
-    db[name] = [url, rev]
+    if name == gemname && url && url != ''
+      return [url, rev]
+    end
   }
-
-  url, rev = db[gemname]
-  if url && url != ''
-    sh "cd #{File.dirname gempath} && git clone #{url} && cd #{gempath} && git checkout #{rev}"
-  end
+  return nil
 end
 
 def for_each_gem(&block)
