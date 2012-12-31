@@ -138,13 +138,7 @@ def for_each_gem(&block)
   IO.readlines(ACTIVE_GEMS).map { |line|
     path = line.chomp
     if not File.exist?(path)
-      gempath = File.join MRUBY_ROOT, 'mrbgems', 'g', path
-      if File.exist? gempath
-        path = gempath
-      else
-        fetch_gem(path)
-        path = gempath
-      end
+      path = File.join(MRUBY_ROOT, 'mrbgems', 'g', path)
     end
     gemname = File.basename(path)
     escaped_gemname = gemname.gsub(/-/, '_')
