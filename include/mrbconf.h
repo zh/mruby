@@ -53,7 +53,6 @@
 //#define DISABLE_IO
 //#define DISABLE_SOCKET
 //#define DISABLE_ENV
-//#define DISABLE_DIGEST	/* requires CommonCrypto or OpenSSL */
 //#define DISABLE_SYSLOG	/* requires Syslog */
 //#define DISABLE_ERRNO
 //#define DISABLE_REQUIRE
@@ -66,12 +65,6 @@
 
 #undef  HAVE_UNISTD_H /* WINDOWS */
 #define HAVE_UNISTD_H /* LINUX */
-
-#ifdef __APPLE__
-#define USE_DIGEST_OSX_COMMONCRYPTO
-#else
-#define USE_DIGEST_OPENSSL
-#endif
 
 /* end of configuration */
 
@@ -139,9 +132,6 @@ typedef short mrb_sym;
 #endif
 #ifndef DISABLE_ENV
 #define ENABLE_ENV
-#endif
-#ifndef DISABLE_DIGEST
-#define ENABLE_DIGEST
 #endif
 #ifndef DISABLE_SYSLOG
 #define ENABLE_SYSLOG
