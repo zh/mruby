@@ -113,7 +113,7 @@ def fetch_gem(gemname)
 
   url, rev = db[gemname]
   if url && url != ''
-    sh "cd #{File.dirname gempath} && git clone #{url} && git checkout #{rev}"
+    sh "cd #{File.dirname gempath} && git clone #{url} && cd #{gempath} && git checkout #{rev}"
   end
 end
 
