@@ -13,6 +13,7 @@ load File.expand_path(ENV['CONFIG'] || './build_config.rb')
 load 'tasks/rules.rake'
 load 'src/mruby_core.rake'
 load 'mrblib/mrblib.rake'
+load 'mrblib/ext/mrblib_ext.rake'
 load 'tools/mrbc/mrbc.rake'
 
 load 'tasks/mrbgems.rake'
