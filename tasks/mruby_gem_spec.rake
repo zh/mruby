@@ -35,7 +35,7 @@ module MRuby
         @dir = Gem.processing_path
         @cflags = []
         @mruby_cflags, @mruby_ldflags, @mruby_libs = [], [], []
-        @mruby_includes = ["#{dir}/include"]
+        @mruby_includes = ["#{dir}/include #{dir}/src"]
         @rbfiles = Dir.glob("#{dir}/mrblib/*.rb")
         @objs = Dir.glob("#{dir}/src/*.{c,cpp,m,asm,S}").map { |f| f.relative_path_from(@dir).to_s.pathmap("#{build_dir}/%X.o") }
         @test_rbfiles = Dir.glob("#{dir}/test/*.rb")
