@@ -20,6 +20,12 @@ MRuby::Build.new do |conf|
   # conf.gem 'doc/mrbgems/c_extension_example'
   # conf.gem 'doc/mrbgems/c_and_ruby_extension_example'
   # conf.gem :git => 'git@github.com:masuidrive/mrbgems-example.git', :branch => 'master'
+
+  conf.gem :git => 'https://github.com/iij/mruby-mtest.git', :branch => 'master'
+  conf.gem :git => 'https://github.com/iij/mruby-dir.git', :branch => 'master'
+  conf.gem :git => 'https://github.com/iij/mruby-digest.git', :branch => 'master'
+  conf.gem :git => 'https://github.com/iij/mruby-process.git', :branch => 'master'
+  conf.gem :git => 'https://github.com/iij/mruby-pack.git', :branch => 'master'
 end
 
 =begin
