@@ -18,6 +18,7 @@
 #include <limits.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/param.h>
 
 #define FILE_SEPARATOR "/"
 
@@ -304,6 +305,18 @@ mrb_file_s_rename(mrb_state *mrb, mrb_value obj)
   return mrb_file_rename_internal(mrb, argv[0], argv[1]);
 }
 
+mrb_value
+mrb_file__getwd(mrb_state *mrb, mrb_value klass)
+{
+  mrb_value path;
+
+  path = mrb_str_buf_new(mrb, MAXPATHLEN);
+  if (getcwd(RSTRING_PTR(path), MAXPATHLEN) == NULL) {
+    mrb_sys_fail(mrb, "getcwd(2)");
+  }
+  mrb_str_resize(mrb, path, strlen(RSTRING_PTR(path)));
+  return path;
+}
 
 void
 mrb_init_file(mrb_state *mrb)
@@ -327,6 +340,7 @@ mrb_init_file(mrb_state *mrb)
   mrb_define_class_method(mrb, file, "basename",  mrb_file_basename,   ARGS_REQ(1));
   mrb_define_class_method(mrb, file, "realpath",  mrb_file_realpath,   ARGS_REQ(1)|ARGS_OPT(1));
   mrb_define_class_method(mrb, file, "size",      mrb_file_size,       ARGS_REQ(1));
+  mrb_define_class_method(mrb, file, "_getwd", mrb_file__getwd, ARGS_NONE());
   mrb_define_const(mrb, file, "LOCK_SH", mrb_fixnum_value(LOCK_SH));
   mrb_define_const(mrb, file, "LOCK_EX", mrb_fixnum_value(LOCK_EX));
   mrb_define_const(mrb, file, "LOCK_UN", mrb_fixnum_value(LOCK_UN));
