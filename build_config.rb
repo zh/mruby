@@ -27,6 +27,7 @@ MRuby::Build.new do |conf|
   conf.gem :git => 'https://github.com/iij/mruby-process.git', :branch => 'master'
   conf.gem :git => 'https://github.com/iij/mruby-pack.git', :branch => 'master'
   conf.gem :git => 'https://github.com/iij/mruby-syslog.git', :branch => 'master'
+  conf.gem :git => 'https://github.com/iij/mruby-env.git', :branch => 'master'
 end
 
 =begin
