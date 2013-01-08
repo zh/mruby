@@ -21,6 +21,8 @@ load 'tasks/mrbgems.rake'
 load 'tasks/libmruby.rake'
 load 'tools/mruby/mruby.rake'
 load 'tools/mirb/mirb.rake'
+
+load 'tasks/mrbgems_test.rake'
 load 'test/mrbtest.rake'
 
 ##############################
