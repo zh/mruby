@@ -41,12 +41,6 @@ main(void)
   mrb_state *mrb;
   mrb_value return_value;
   const char *prog = "report()";
-  const char *mtest = ""
-    "if Object.const_defined?(:MTest)\n"
-    "  assert('MrubyMTest run') do\n"
-    "    MTest::Unit.new.run == 0\n"
-    "  end\n"
-    "end";
   int ret = EXIT_SUCCESS;
 
   print_hint();
@@ -59,8 +53,6 @@ main(void)
   }
 
   mrb_init_mrbtest(mrb);
-  /* execute MTest */
-  mrb_load_string(mrb, mtest);
   /* evaluate the test */
   return_value = mrb_load_string(mrb, prog);
   /* did an exception occur? */
