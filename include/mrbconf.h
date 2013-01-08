@@ -53,7 +53,6 @@
 //#define DISABLE_IO
 //#define DISABLE_SOCKET
 //#define DISABLE_ENV
-//#define DISABLE_SYSLOG	/* requires Syslog */
 //#define DISABLE_ERRNO
 //#define DISABLE_REQUIRE
 //#define DISABLE_RANDOM
@@ -132,9 +131,6 @@ typedef short mrb_sym;
 #endif
 #ifndef DISABLE_ENV
 #define ENABLE_ENV
-#endif
-#ifndef DISABLE_SYSLOG
-#define ENABLE_SYSLOG
 #endif
 #ifndef DISABLE_ERRNO
 #define ENABLE_ERRNO
