@@ -22,9 +22,7 @@ if Object.const_defined?(:Syslog)
       x
     end
 
-    assert('Syslog open stderr') do
-      \$stderr = IO.open(2, "w") unless \$stderr
-    end
+    \$stderr = IO.open(2, "w") unless \$stderr
 
     assert('Syslog.close') do
       e1 = nil
