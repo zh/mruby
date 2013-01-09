@@ -30,7 +30,11 @@ mrb_value mrb_dump_irep_str(mrb_state*,int,int);
 #define DUMP_TYPE_BIN  1
 #define DUMP_TYPE_HEX  2
 
-/* dump/load error code */
+/* dump/load error code
+ *
+ * NOTE: MRB_DUMP_GENERAL_FAILURE is caused by
+ * unspecified issues like malloc failed.
+ */
 #define MRB_DUMP_OK                     0
 #define MRB_DUMP_GENERAL_FAILURE        -1
 #define MRB_DUMP_WRITE_FAULT            -2
