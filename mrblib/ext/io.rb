@@ -76,6 +76,9 @@ STDIN  = IO.open(0, 'r')
 STDOUT = IO.open(1, 'w')
 STDERR = IO.open(2, 'w')
 
+STDOUT.sync = true
+STDERR.sync = true
+
 $stdin  = STDIN
 $stdout = STDOUT
 $stderr = STDERR
