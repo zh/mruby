@@ -62,38 +62,38 @@ class File < IO
 
   def self.expand_path(path, default_dir = '.')
     def concat_path(path, base_path)
-      own_home_path = Regexp.compile('\\A~(/.*)?\\z')
-      other_home_path = Regexp.compile('\\A~([^/]+)(/.*)?\\z')
-      absolute_path = Regexp.compile('\\A/.*')
-      relative_path = Regexp.compile('\\A[^/]')
-
-      if own_home_path =~ path
-        dir = $1
-        expanded_path = ENV['HOME']
-
-        unless expanded_path
-          raise ArgumentError, "couldn't find HOME environment -- expanding '~'"
-        end
-
-        expanded_path += dir if dir
-        expanded_path += "/"
-      elsif other_home_path =~ path
-        user = $1
-        dir = $2
-        pwnam = _getpwnam(user)
-
-        unless pwnam
-          raise ArgumentError, "user #{user} doesn't exist"
-        end
-
-        expanded_path = pwnam.dir
-        expanded_path += dir if dir
-        expanded_path += "/"
-      elsif absolute_path =~ path
+      if path[0] == "/"
         expanded_path = path
-      else relative_path =~ path
+      elsif path[0] == "~"
+        if (path[1] == "/" || path[1] == nil)
+          dir = path[1, path.size]
+          home_dir = _gethome
+
+          unless home_dir
+            raise ArgumentError, "couldn't find HOME environment -- expanding '~'"
+          end
+
+          expanded_path = home_dir
+          expanded_path += dir if dir
+          expanded_path += "/"
+        else
+          splitted_path = path.split("/")
+          user = splitted_path[0][1, splitted_path[0].size]
+          dir = "/" + splitted_path[1, splitted_path.size].join("/")
+
+          home_dir = _gethome(user)
+
+          unless home_dir
+            raise ArgumentError, "user #{user} doesn't exist"
+          end
+
+          expanded_path = home_dir
+          expanded_path += dir if dir
+          expanded_path += "/"
+        end
+      else
         expanded_path = concat_path(base_path, _getwd)
-        expanded_path += "/#{path}"
+        expanded_path += "/" + path
       end
 
       expanded_path
@@ -101,7 +101,7 @@ class File < IO
 
     expanded_path = concat_path(path, default_dir)
     expand_path_array = []
-    expanded_path = expanded_path.gsub(/\/{2,}/, '/')
+    expanded_path = expanded_path.gsub(/\/\/+/, '/')
 
     if expanded_path == "/"
       expanded_path
@@ -118,30 +118,8 @@ class File < IO
         end
       end
 
-      if expand_path_array.size == 1
-        expand_path_array << ''
-      end
-
       expand_path_array.join("/")
     end
-  end
-
-  def self._getpwnam(user)
-    Struct.new("Passwd", :name, :password, :uid, :gid, :gecos, :dir, :shell)
-
-    pwd = nil
-    File.open("/etc/passwd", "r") do |f|
-      f.each_line do |line|
-        if line =~ Regexp.compile('^(.+?):(.+?):(.+?):(.+?):(.+?):(.+?):(.+?)$')
-          if $1 == user
-            pwd = Struct::Passwd.new($1, $2, $3, $4, $5, $6, $7)
-            break
-          end
-        end
-      end
-    end
-
-    pwd
   end
 
 end

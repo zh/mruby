@@ -19,6 +19,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/param.h>
+#include <pwd.h>
 
 #define FILE_SEPARATOR "/"
 
@@ -318,6 +319,50 @@ mrb_file__getwd(mrb_state *mrb, mrb_value klass)
   return path;
 }
 
+int
+mrb_file_is_absolute_path(const char *path)
+{
+  if (path[0] == '/')
+    return 1;
+  return 0;
+}
+
+static mrb_value
+mrb_file__gethome(mrb_state *mrb, mrb_value klass)
+{
+  mrb_value username, result;
+  char *cuser, *home;
+  int argc;
+  struct passwd *pwd;
+
+  argc = mrb_get_args(mrb, "|S", &username);
+
+  if (argc == 0) {
+    home = getenv("HOME");
+  } else {
+    cuser = mrb_str_to_cstr(mrb, username);
+    if ((pwd = getpwnam(cuser)) == NULL) {
+      return mrb_nil_value();
+    } else {
+      home = pwd->pw_dir;
+    }
+  }
+
+  if (!mrb_file_is_absolute_path(home)) {
+    if (argc && strlen(cuser) > 0) {
+      mrb_raisef(mrb, E_ARGUMENT_ERROR, "non-absolute home of ~%s", cuser);
+    } else {
+      mrb_raise(mrb, E_ARGUMENT_ERROR, "non-absolute home");
+    }
+  }
+
+  result = mrb_str_buf_new(mrb, strlen(home));
+  strcpy( RSTRING_PTR(result), home);
+  mrb_str_resize(mrb, result, strlen(RSTRING_PTR(result)));
+
+  return result;
+}
+
 void
 mrb_init_file(mrb_state *mrb)
 {
@@ -341,6 +386,7 @@ mrb_init_file(mrb_state *mrb)
   mrb_define_class_method(mrb, file, "realpath",  mrb_file_realpath,   ARGS_REQ(1)|ARGS_OPT(1));
   mrb_define_class_method(mrb, file, "size",      mrb_file_size,       ARGS_REQ(1));
   mrb_define_class_method(mrb, file, "_getwd", mrb_file__getwd, ARGS_NONE());
+  mrb_define_class_method(mrb, file, "_gethome", mrb_file__gethome, ARGS_OPT(1));
   mrb_define_const(mrb, file, "LOCK_SH", mrb_fixnum_value(LOCK_SH));
   mrb_define_const(mrb, file, "LOCK_EX", mrb_fixnum_value(LOCK_EX));
   mrb_define_const(mrb, file, "LOCK_UN", mrb_fixnum_value(LOCK_UN));

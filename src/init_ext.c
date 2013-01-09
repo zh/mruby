@@ -32,12 +32,6 @@ mrb_init_ext(mrb_state *mrb)
   mrb_init_socket(mrb); DONE;
 #endif
 #endif
-#ifdef ENABLE_ENV
-  mrb_init_env(mrb); DONE;
-#endif
-#ifdef ENABLE_RANDOM
-  mrb_init_random(mrb); DONE;
-#endif
 
   mrb_init_mrblib_ext(mrb);
 }
