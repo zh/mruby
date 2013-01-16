@@ -167,6 +167,7 @@ main(int argc, char **argv)
   int n;
   int code_block_open = FALSE;
   mrb_value MIRB_BIN;
+  int ai;
 
   print_hint();
 
@@ -198,6 +199,7 @@ main(int argc, char **argv)
 #endif /* ENABLE_REQUIRE */
 
 
+  ai = mrb_gc_arena_save(mrb);
   while (TRUE) {
 #ifndef ENABLE_READLINE
     print_cmdline(code_block_open);
@@ -279,6 +281,7 @@ main(int argc, char **argv)
       ruby_code[0] = '\0';
       last_code_line[0] = '\0';
       mrb_parser_free(parser);
+      mrb_gc_arena_restore(mrb, ai);
     }
   }
   mrbc_context_free(mrb, cxt);
