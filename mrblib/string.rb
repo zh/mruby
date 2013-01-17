@@ -186,9 +186,17 @@ class String
   end
 
   def slice!(arg1, arg2 = 1)
+    return nil if arg2 < 0
     if arg1.class == Fixnum
       rval = self[arg1, arg2]
-      self.replace(self[0...arg1] + self[(arg1 + arg2)...-1]) if arg2 > 0
+      len = self.length
+      rpos = arg1 + arg2
+      rpos += len if arg1 < 0
+      rlen = len - rpos
+      region_l = self[0...arg1]
+      region_r = self[rpos, rlen]
+      region_r = '' if region_r == nil
+      self.replace(region_l + region_r)
     elsif arg1.class == String
       rval = arg1
       self.gsub!(arg1, "")

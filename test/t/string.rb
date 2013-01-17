@@ -343,6 +343,27 @@ assert('String#slice', '15.2.10.5.34') do
     a3 == 'bc' and b3 == nil
 end
 
+assert('String#slice!', '15.2.10.5.X') do
+  x1 = 'abc'
+  x2 = x1.clone
+  x3 = x1.clone
+  y1 = x1.slice!(0)
+  y2 = x2.slice!(1)
+  y3 = x3.slice!(-1)
+
+  u1 = 'abc'
+  u2 = u1.clone
+  u3 = u1.clone
+  v1 = u1.slice!(0, 0)
+  v2 = u2.slice!(0, 1)
+  v3 = u3.slice!(0, -1)
+
+  x1 == 'bc' and x2 == 'ac' and x3 == 'ab' and
+    y1 == 'a' and y2 == 'b' and y3 == 'c' and
+    u1 == 'abc' and u2 == 'bc' and u3 == 'abc' and
+    v1 == '' and v2 == 'a' and v3 == nil
+end
+
 if Object.const_defined?(:Regexp)
 assert('String#split', '15.2.10.5.35') do
   ''.split(//)               == []                          and
