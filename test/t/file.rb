@@ -6,7 +6,7 @@ if Object.const_defined?(:File)
     File.class == Class
   end
 
-  if ENV['HOME']
+  if Object.const_defined?(:ENV) && ENV['HOME']
     assert('File.expand_path') do
       home = (File.expand_path("~/") == ENV['HOME'])
       home_base = (File.expand_path("~/", ".") == ENV['HOME'])
