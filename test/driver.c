@@ -52,7 +52,7 @@ main(int argc, char **argv)
     return EXIT_FAILURE;
   }
 
-  if (argc == 2 && strcmp(argv[1], "-v") == 0) {
+  if (argc == 2 && strncmp(argv[1], "-v", 2) == 0) {
     printf("verbose mode: enable\n");
     mrb_gv_set(mrb, mrb_intern(mrb, "$verbose"), mrb_true_value());
   }
