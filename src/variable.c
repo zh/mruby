@@ -922,13 +922,13 @@ mrb_gv_alias_name_check(mrb_state *mrb, mrb_sym sym)
   int ai = mrb_gc_arena_save(mrb);
   const char *const *ptr = mrb_gv_alias_names;
   mrb_value sym0 = mrb_str_new2(mrb, mrb_sym2name(mrb, sym));
+  int len = RSTRING_LEN(sym0);
 
   for (;*ptr != NULL; ptr++) {
     char *str = strchr(*ptr, '=');
     if (str != NULL) {
-      mrb_value key = mrb_str_new(mrb, *ptr, str - *ptr);
-      str++;
-      if (mrb_str_cmp(mrb, key, sym0) == 0) {
+      if (len == (str - *ptr) && strncmp(RSTRING_PTR(sym0), *ptr, len) == 0) {
+        str++;
         sym = mrb_intern(mrb, str);
         break;
       }
