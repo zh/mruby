@@ -11,8 +11,6 @@ void mrb_init_errno(mrb_state *mrb);
 void mrb_init_io(mrb_state *mrb);
 void mrb_init_file(mrb_state *mrb);
 void mrb_init_socket(mrb_state *mrb);
-void mrb_init_env(mrb_state *mrb);
-void mrb_init_random(mrb_state *mrb);
 void mrb_init_mrblib_ext(mrb_state*);
 
 #define DONE mrb_gc_arena_restore(mrb, 0);
