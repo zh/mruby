@@ -5,6 +5,6 @@ MRuby.each_target do
   self.libmruby << objs
 
   file "#{build_dir}/lib/libmruby_core.a" => objs do |t|
-    archive t.name, 'r', t.prerequisites
+    archiver.run t.name, t.prerequisites
   end
 end

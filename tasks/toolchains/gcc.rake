@@ -2,7 +2,7 @@ MRuby::Toolchain.new(:gcc) do |conf|
   [conf.cc, conf.cxx, conf.objc].each do |cc|
     cc.command = ENV['CC'] || 'gcc'
     cc.flags = [ENV['CFLAGS'] || %w(-g -O3 -Wall -Werror-implicit-function-declaration)]
-    cc.include_paths = ["#{root}/include"]
+    cc.include_paths = ["#{root}/include", "#{root}/src"]
     cc.defines = %w(DISABLE_GEMS)
     cc.option_include_path = '-I%s'
     cc.option_define = '-D%s'
