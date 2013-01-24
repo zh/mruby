@@ -146,6 +146,21 @@ module MRuby
       sh "#{filename mrbtest}"
       puts 
     end
+
+    def print_build_summary
+      puts "================================================"
+      puts "      Config Name: #{@name}"
+      puts " Output Directory: #{self.build_dir}"
+      puts "         Binaries: #{@bins.join(', ')}" unless @bins.empty?
+      unless @gems.empty?
+        puts "    Included Gems:"
+        @gems.map{|g| g.name }.each do |name|
+          puts "             #{name}"
+        end
+      end
+      puts "================================================"
+      puts
+    end
   end # Build
 
   class CrossBuild < Build
