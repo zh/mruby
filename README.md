@@ -4,14 +4,9 @@ mruby に対して、主に UNIX 環境に依存する機能を追加した fork
 
 (English translation is under way: https://github.com/iij/mruby/wiki/README.md.en )
 
-# 拡張部分
+# iij/mrubyの拡張部分
 
  * 追加したクラス/モジュール
-   * Digest::MD5/RIPEMD160/SHA1/SHA256/SHA384/SHA512
-   * Digest::HMAC: #reset 以外
-   * Dir: ::[] ::chdir ::chroot ::glob ::home #path #to\_path #inspect 以外
-   * ENV: ::[] ::[]= ::clear ::delete ::inspect ::keys ::size ::store
-          ::to\_a ::to\_hash ::to\_s ::values
    * Errno::EXXX
    * File: ::open ::umask ::unlink ::delete ::rename ::exist? ::exists?
            ::dirname ::basename ::size #path
@@ -19,20 +14,16 @@ mruby に対して、主に UNIX 環境に依存する機能を追加した fork
          #close #closed? #each #each_byte #each_line #read #sync #sync=
          #write #to_io
    * IPAddr: ::new #<=> #family #hton #inspect #ipv4? #ipv6? #mask #to\_s #| #~
-   * Process: ::kill ::pid ::ppid
    * Regexp: ::compile ::last\_match #match
    * TCPSocket: ::new ::open
    * UNIXSocket: #addr ::new ::open #peeraddr
-   * Syslog: ::open ::close ::log ::opened? ::ident ::options ::facility
    * SystemCallError
 
  * 拡張したクラス/モジュール
-   * Array: #- #& #| #pack #uniq #uniq! #flatten #flatten!
-   * Kernel: #exit #load #require #sleep #system #rand #srand
+   * Array: #- #& #| #uniq #uniq! #flatten #flatten!
+   * Kernel: #exit #load #require #sleep #system
      * load, require については https://github.com/iij/mruby/wiki/require も参照してください
-     * rand, srand は、rand(3) 相当の実装です
-   * String: #lstrip #rstrip #strip #unpack #gsub #gsub! #sub #sub! #scan
-     * Array#pack, String#unpack で利用できるテンプレート文字列は "m"(base64) 、"H"(16進文字列/上位ニブルが先)と"C"(8bit 符号なし整数) のみです。
+   * String: #lstrip #rstrip #strip #gsub #gsub! #sub #sub! #scan
 
  * その他の拡張
    * 正規表現リテラル
@@ -40,6 +31,30 @@ mruby に対して、主に UNIX 環境に依存する機能を追加した fork
 
 http://iij.github.com/mruby/lib/ からリファレンス形式でも参照できます。
 ハイライトされているクラス/メソッドが iij/mruby で利用可能なものです。
+
+# mrbgem
+
+mrbgemの形で実装した機能拡張の多くは、mruby/mrubyでも利用可能です。
+
+* https://github.com/iij/mruby-mtest
+   * MiniTestライクなTestingFramework
+* https://github.com/iij/mruby-dir (iij/mruby のみサポート)
+   * Dir: ::[] ::chdir ::chroot ::glob ::home #path #to\_path #inspect 以外
+* https://github.com/iij/mruby-digest
+   * Digest::MD5/RIPEMD160/SHA1/SHA256/SHA384/SHA512
+   * Digest::HMAC: #reset 以外
+* https://github.com/iij/mruby-process
+   * Process: ::kill ::pid ::ppid
+* https://github.com/iij/mruby-pack
+   * Array: #pack
+   * String: #unpack
+* https://github.com/iij/mruby-syslog
+   * Syslog: ::open ::close ::log ::opened? ::ident ::options ::facility
+* https://github.com/iij/mruby-env
+   * ENV: ::[] ::[]= ::clear ::delete ::inspect ::keys ::size ::store
+          ::to\_a ::to\_hash ::to\_s ::values
+* https://github.com/iij/mruby-simple-random
+   * Kernel: #rand #srand
 
 
 # ブランチ
