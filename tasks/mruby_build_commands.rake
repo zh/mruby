@@ -229,5 +229,10 @@ module MRuby
         out.puts io.read
       end
     end
+
+    def compile(outfile, infile)
+      @command ||= @build.mrbcfile
+      system("#{filename @command} -o#{outfile} #{infile}")
+    end
   end
 end

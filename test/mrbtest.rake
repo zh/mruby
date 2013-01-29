@@ -7,6 +7,8 @@ MRuby.each_target do
   mrbs = Dir.glob("#{dir}/t/*.rb")
   init = "#{dir}/init_mrbtest.c"
   asslib = "#{dir}/assert.rb"
+  catrb  = "#{build_dir}/#{dir}/mrbtest.rb"
+  catmrb = "#{build_dir}/#{dir}/mrbtest.mrb"
 
   objs = [objfile("#{build_dir}/#{dir}/driver"), mlib].flatten
 
@@ -19,7 +21,7 @@ MRuby.each_target do
     linker.run t.name, t.prerequisites, gem_libraries, gem_library_paths, gem_flags, gem_flags_before_libraries
   end
 
-  file mlib => [clib]
+  file mlib => [clib, catmrb]
   file clib => [mrbcfile, init, asslib] + mrbs do |t|
     _pp "GEN", "*.rb", "#{clib}"
     open(clib, 'w') do |f|
@@ -33,6 +35,22 @@ MRuby.each_target do
         f.puts %Q[    GENERATED_TMP_mrb_#{g.funcname}_gem_test(mrb);]
       end
       f.puts %Q[}]
+    end
+  end
+
+  file catmrb => [catrb] do |t|
+    mrbc.compile(catmrb, catrb)
+  end
+
+  file catrb do |t|
+    _pp "GEM", "*.rb", "#{catrb}"
+    files = ([asslib] + mrbs + gems.map{ |g| g.test_rbfiles }).flatten.compact
+    open(catrb, 'w') do |f|
+      files.each do |fname|
+        f.puts IO.read(fname)
+      end
+      f.puts %Q[report]
+      f.puts %Q[raise 'mrbtest error' if $ko_test != 0 && $kill_test != 0]
     end
   end
 end
