@@ -1,7 +1,7 @@
 ##
 # IPAddr Test
 
-if Object.const_defined?(:IPAddr)
+if Object.const_defined?(:IPAddr) && "".respond_to?(:unpack) && [].respond_to?(:pack)
   assert('IPAddr') do
     IPAddr.class == Class
   end
