@@ -50,7 +50,7 @@ MRuby.each_target do
         f.puts IO.read(fname)
       end
       f.puts %Q[report]
-      f.puts %Q[raise 'mrbtest error' if $ko_test != 0 && $kill_test != 0]
+      f.puts %Q[raise 'mrbtest error' if $ko_test != 0 || $kill_test != 0]
     end
   end
 end
