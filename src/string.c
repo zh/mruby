@@ -2278,6 +2278,7 @@ mrb_str_split_m(mrb_state *mrb, mrb_value str)
         else
             tmp = mrb_str_subseq(mrb, str, BEG(idx), END(idx)-BEG(idx));
         mrb_ary_push(mrb, result, tmp);
+        mrb_gc_arena_restore(mrb, ai);
       }
       if (lim > 0 && lim <= ++i) break;
     }
