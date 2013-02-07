@@ -2412,7 +2412,7 @@ mrb_backref_set(mrb_state *mrb, mrb_value val)
   mrb_gv_set(mrb, mrb_intern(mrb, "$&"), mrb_reg_nth_match(mrb, 0, val));
   mrb_gv_set(mrb, mrb_intern(mrb, "$~"), val);
   mrb_gv_set(mrb, mrb_intern(mrb, "$`"), mrb_reg_match_pre(mrb, val));
-  mrb_gv_set(mrb, mrb_intern(mrb, "$`"), mrb_reg_match_post(mrb, val));
+  mrb_gv_set(mrb, mrb_intern(mrb, "$'"), mrb_reg_match_post(mrb, val));
 
   for (i = 1; i < MAX_GLOBAL_MATCH_NUM; i++) {
     char sym[8];
