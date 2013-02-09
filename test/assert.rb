@@ -25,8 +25,14 @@ end
 def assert(str = 'Assertion failed', iso = '')
   print(str, iso, ' : ') if $verbose
   begin
-    if(!yield)
-      $asserts.push(assertion_string('Fail: ', str, iso))
+    $mrbtest_str, $mrbtest_iso = str, iso
+    $mrbtest_assert = []
+    if(!yield || $mrbtest_assert.size > 0)
+      msg = assertion_string('Fail: ', str, iso, nil)
+      $mrbtest_assert.each do |diff|
+        msg += "\n" + diff.join("\n")
+      end
+      $asserts.push(msg)
       $ko_test += 1
       print('F')
     else
@@ -37,8 +43,48 @@ def assert(str = 'Assertion failed', iso = '')
     $asserts.push(assertion_string('Error: ', str, iso, e))
     $kill_test += 1
     print('X')
+  ensure
+    $mrbtest_assert = nil
   end
   print("\n") if $verbose
+end
+
+def assertion_diff(exp, act)
+  msg = ""
+  msg += "    Expected: #{exp.inspect}\n"
+  msg += "      Actual: #{act.inspect}"
+end
+
+def assert_true(ret, msg = '', diff = '')
+  if $mrbtest_assert
+    if !ret
+      $mrbtest_assert.push([msg, diff])
+    end
+  else
+    if !ret
+      $ko_test += 1
+      $asserts.push(assertion_string('Fail: ', 'Assertion Failed') + "\n" + diff)
+      print('F')
+    else
+      $ok_test += 1
+      print('.')
+    end
+  end
+  ret
+end
+
+def assert_equal(exp, act, msg = '')
+  str = " - Fail: #{$mrbtest_str}"
+  str += " [#{$mrbtest_iso}]" if $mrbtest_iso && $mrbtest_iso != ''
+  str += " ... #{msg}" if msg && msg != ''
+  str += " (mrbgems: #{GEMNAME})" if Object.const_defined?(:GEMNAME)
+  diff = assertion_diff(exp, act)
+  assert_true(exp == act, str, diff)
+end
+
+def assert_nil(obj, msg = nil)
+  msg = "Expected #{obj.inspect} to be nil" if !msg
+  assert_true(obj.nil?, msg)
 end
 
 ##
