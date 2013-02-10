@@ -54,10 +54,9 @@ main(int argc, char **argv)
   }
 
   if (argc == 2 && strncmp(argv[1], "-v", 2) == 0) {
-    printf("verbose mode: enable\n");
-    mrb_gv_set(mrb, mrb_intern(mrb, "$verbose"), mrb_true_value());
+    printf("verbose mode: enable\n\n");
+    mrb_gv_set(mrb, mrb_intern(mrb, "$mrbtest_verbose"), mrb_true_value());
   }
-
 
   mrb_init_mrbtest(mrb);
   /* evaluate the test */

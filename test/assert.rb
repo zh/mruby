@@ -23,7 +23,7 @@ end
 #       which will be tested by this
 #       assertion
 def assert(str = 'Assertion failed', iso = '')
-  print(str, iso, ' : ') if $verbose
+  print(str, (iso != '' ? " [#{iso}]" : ''), ' : ') if $mrbtest_verbose
   begin
     $mrbtest_str, $mrbtest_iso = str, iso
     $mrbtest_assert = []
@@ -46,7 +46,7 @@ def assert(str = 'Assertion failed', iso = '')
   ensure
     $mrbtest_assert = nil
   end
-  print("\n") if $verbose
+  print("\n") if $mrbtest_verbose
 end
 
 def assertion_diff(exp, act)
