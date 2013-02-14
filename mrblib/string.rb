@@ -28,15 +28,14 @@ class String
   #
   # ISO 15.2.10.5.18
   def gsub(*args, &block)
-    unless (args.size == 1 && block) || args.size == 2
-      raise ArgumentError, "wrong number of arguments"
-    end
-
-    ### *** TODO *** ###
-    unless Object.const_defined?(:Regexp)
-      raise NotImplementedError, "gsub not available (yet)"
+    if Object.const_defined?(:Regexp) && args[0].is_a?(Regexp)
+      _gsub(*args, &block)
+    elsif args.size == 2
+      split(args[0]).join(args[1])
+    elsif args.size == 1 && block
+      split(args[0]).join(block.call(args[0]))
     else
-      self._gsub(*args, &block)
+      raise ArgumentError, "wrong number of arguments"
     end
   end
 
@@ -80,15 +79,14 @@ class String
   #
   # ISO 15.2.10.5.36
   def sub(*args, &block)
-    unless (args.size == 1 && block) || args.size == 2
-      raise ArgumentError, "wrong number of arguments"
-    end
-
-    ### *** TODO *** ###
-    unless Object.const_defined?(:Regexp)
-      raise NotImplementedError, "sub not available (yet)"
+    if Object.const_defined?(:Regexp) && args[0].is_a?(Regexp)
+      _sub(*args, &block)
+    elsif args.size == 2
+      split(args[0], 2).join(args[1])
+    elsif args.size == 1 && block
+      split(args[0], 2).join(block.call(args[0]))
     else
-      self._sub(*args, &block)
+      raise ArgumentError, "wrong number of arguments"
     end
   end
 

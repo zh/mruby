@@ -193,36 +193,50 @@ assert('String#eql?', '15.2.10.5.17') do
 end
 
 if Object.const_defined?(:Regexp)
-# TODO ATM broken assert('String#gsub', '15.2.10.5.18') do
-assert('String#gsub', '15.2.10.5.18') do
-  re = Regexp.compile('def')
-  result1 = 'abcdefg'.gsub(re, '!!')
-  re = Regexp.compile('b')
-  result2 = 'abcabc'.gsub(re, '<<\&>>')
-  re = Regexp.compile('x+(b+)')
-  result3 = 'xxbbxbb'.gsub(re, 'X<<\1>>')
-  result4 = '2.5'.gsub('.', ',')
+  # TODO ATM broken assert('String#gsub', '15.2.10.5.18') do
+  assert('String#gsub with Regexp', '15.2.10.5.18') do
+    re = Regexp.compile('def')
+    result1 = 'abcdefg'.gsub(re, '!!')
+    re = Regexp.compile('b')
+    result2 = 'abcabc'.gsub(re, '<<\&>>')
+    re = Regexp.compile('x+(b+)')
+    result3 = 'xxbbxbb'.gsub(re, 'X<<\1>>')
+    result4 = '2.5'.gsub('.', ',')
 
-  result1 == "abc!!g" and
-  result2 == "a<<b>>ca<<b>>c" and
-  result3 == "X<<bb>>X<<bb>>" and
-  result4 == "2,5"
-end
+    result1 == "abc!!g" and
+    result2 == "a<<b>>ca<<b>>c" and
+    result3 == "X<<bb>>X<<bb>>" and
+    result4 == "2,5"
+  end
 
-# TODO ATM broken assert('String#gsub!', '15.2.10.5.19') do
-assert('String#gsub!', '15.2.10.5.19') do
-  result1 = "String-String"
-  re = Regexp.compile('in.')
-  result1.gsub!(re, "!!")
+  # TODO ATM broken assert('String#gsub!', '15.2.10.5.19') do
+  assert('String#gsub! with Regexp', '15.2.10.5.19') do
+    result1 = "String-String"
+    re = Regexp.compile('in.')
+    result1.gsub!(re, "!!")
 
-  result2 = "String-String"
-  re = Regexp.compile('in.')
-  result2.gsub!(re, '<<\&>>')
+    result2 = "String-String"
+    re = Regexp.compile('in.')
+    result2.gsub!(re, '<<\&>>')
 
-  result1 == "Str!!-Str!!" and
-  result2 == "Str<<ing>>-Str<<ing>>"
-end
+    result1 == "Str!!-Str!!" and
+    result2 == "Str<<ing>>-Str<<ing>>"
+  end
 end # END: Object.const_defined?(:Regexp)
+
+assert('String#gsub', '15.2.10.5.18') do
+  'abcabc'.gsub('b', 'B') == 'aBcaBc' && 'abcabc'.gsub('b') { |w| w.capitalize } == 'aBcaBc' 
+end
+
+assert('String#gsub!', '15.2.10.5.19') do
+  a = 'abcabc'
+  a.gsub!('b', 'B')
+
+  b = 'abcabc'
+  b.gsub!('b') { |w| w.capitalize }
+
+  a == 'aBcaBc' && b == 'aBcaBc' 
+end
 
 assert('String#hash', '15.2.10.5.20') do
   a = 'abc'
@@ -291,22 +305,22 @@ assert('String#rindex', '15.2.10.5.31') do
 end
 
 if Object.const_defined?(:Regexp)
-# TODO Broken ATM assert('String#scan', '15.2.10.5.32') do
-assert('String#scan', '15.2.10.5.32') do
-  re = Regexp.compile('..')
-  result1 = "foobar".scan(re)
-  re = Regexp.compile('ba.')
-  result2 = "foobarbazfoobarbazz".scan(re)
-  re = Regexp.compile('(.)')
-  result3 = "foobar".scan(re)
-  re = Regexp.compile('(ba)(.)')
-  result4 = "foobarbazfoobarbaz".scan(re)
+  # TODO Broken ATM assert('String#scan', '15.2.10.5.32') do
+  assert('String#scan', '15.2.10.5.32') do
+    re = Regexp.compile('..')
+    result1 = "foobar".scan(re)
+    re = Regexp.compile('ba.')
+    result2 = "foobarbazfoobarbazz".scan(re)
+    re = Regexp.compile('(.)')
+    result3 = "foobar".scan(re)
+    re = Regexp.compile('(ba)(.)')
+    result4 = "foobarbazfoobarbaz".scan(re)
 
-  result1 == ["fo", "ob", "ar"] and
-  result2 == ["bar", "baz", "bar", "baz"] and
-  result3 == [["f"], ["o"], ["o"], ["b"], ["a"], ["r"]] and
-  result4 == [["ba", "r"], ["ba", "z"], ["ba", "r"], ["ba", "z"]]
-end
+    result1 == ["fo", "ob", "ar"] and
+    result2 == ["bar", "baz", "bar", "baz"] and
+    result3 == [["f"], ["o"], ["o"], ["b"], ["a"], ["r"]] and
+    result4 == [["ba", "r"], ["ba", "z"], ["ba", "r"], ["ba", "z"]]
+  end
 end
 
 assert('String#size', '15.2.10.5.33') do
@@ -365,21 +379,21 @@ assert('String#slice!', '15.2.10.5.X') do
 end
 
 if Object.const_defined?(:Regexp)
-assert('String#split', '15.2.10.5.35') do
-  ''.split(//)               == []                          and
-  ''.split(/x/)              == []                          and
-  'abc'.split(//)            == ['a', 'b', 'c']             and
-  'abc'.split(/,/)           == ['abc']                     and
-  'a1b23c45'.split(/\d/)     == ['a', 'b', '', 'c']         and
-  'a1b23c45'.split(/\d/, 0)  == ['a', 'b', '', 'c']         and
-  'a1b23c45'.split(/\d/, 1)  == ['a1b23c45']                and
-  'a1b23c45'.split(/\d/, 4)  == ['a', 'b', '', 'c45']       and
-  'a1b23c45'.split(/\d/, -4) == ['a', 'b', '', 'c', '', ''] and
-  'abc'.split(//, 2)         == ['a', 'bc']                 and
-  'a bc'.split(/\s*/)        == ['a', 'b', 'c']             and
-  ' abc  abc abc'.split(/ /) == ['', 'abc', '', 'abc', 'abc'] and
-  '1, 2.34,56, 7'.split(/,\s*/) == ['1', '2.34', '56', '7']
-end
+  assert('String#split', '15.2.10.5.35') do
+    ''.split(//)               == []                          and
+    ''.split(/x/)              == []                          and
+    'abc'.split(//)            == ['a', 'b', 'c']             and
+    'abc'.split(/,/)           == ['abc']                     and
+    'a1b23c45'.split(/\d/)     == ['a', 'b', '', 'c']         and
+    'a1b23c45'.split(/\d/, 0)  == ['a', 'b', '', 'c']         and
+    'a1b23c45'.split(/\d/, 1)  == ['a1b23c45']                and
+    'a1b23c45'.split(/\d/, 4)  == ['a', 'b', '', 'c45']       and
+    'a1b23c45'.split(/\d/, -4) == ['a', 'b', '', 'c', '', ''] and
+    'abc'.split(//, 2)         == ['a', 'bc']                 and
+    'a bc'.split(/\s*/)        == ['a', 'b', 'c']             and
+    ' abc  abc abc'.split(/ /) == ['', 'abc', '', 'abc', 'abc'] and
+    '1, 2.34,56, 7'.split(/,\s*/) == ['1', '2.34', '56', '7']
+  end
 end
 
 assert('String#split with non-Regexp separator') do
@@ -412,34 +426,48 @@ assert('String#split with non-Regexp separator') do
 end
 
 if Object.const_defined?(:Regexp)
-# TODO ATM broken assert('String#sub', '15.2.10.5.36') do
-assert('String#sub', '15.2.10.5.36') do
-  re = Regexp.compile('def')
-  result1 = 'abcdefg'.sub(re, '!!')
-  re = Regexp.compile('b')
-  result2 = 'abcabc'.sub(re, '<<\&>>')
-  re = Regexp.compile('x+(b+)')
-  result3 = 'xbbxbb'.sub(re, 'X<<\1>>')
+  # TODO ATM broken assert('String#sub', '15.2.10.5.36') do
+  assert('String#sub with Regexp', '15.2.10.5.36') do
+    re = Regexp.compile('def')
+    result1 = 'abcdefg'.sub(re, '!!')
+    re = Regexp.compile('b')
+    result2 = 'abcabc'.sub(re, '<<\&>>')
+    re = Regexp.compile('x+(b+)')
+    result3 = 'xbbxbb'.sub(re, 'X<<\1>>')
 
-  result1 == "abc!!g" and
-  result2 == "a<<b>>cabc" and
-  result3 == "X<<bb>>xbb"
-end
+    result1 == "abc!!g" and
+    result2 == "a<<b>>cabc" and
+    result3 == "X<<bb>>xbb"
+  end
 
-# TODO ATM broken assert('String#sub!', '15.2.10.5.37') do
-assert('String#sub!', '15.2.10.5.37') do
-  result1 = "String-String"
-  re = Regexp.compile('in.')
-  result1.sub!(re, "!!")
+  # TODO ATM broken assert('String#sub!', '15.2.10.5.37') do
+  assert('String#sub! with Regexp', '15.2.10.5.37') do
+    result1 = "String-String"
+    re = Regexp.compile('in.')
+    result1.sub!(re, "!!")
 
-  result2 = "String-String"
-  re = Regexp.compile('in.')
-  result2.sub!(re, '<<\&>>')
+    result2 = "String-String"
+    re = Regexp.compile('in.')
+    result2.sub!(re, '<<\&>>')
 
-  result1 == "Str!!-String" and
-  result2 == "Str<<ing>>-String"
-end
+    result1 == "Str!!-String" and
+    result2 == "Str<<ing>>-String"
+  end
 end # END: Object.const_defined?(:Regexp)
+
+assert('String#sub', '15.2.10.5.36') do
+  'abcabc'.sub('b', 'B') == 'aBcabc' && 'abcabc'.sub('b') { |w| w.capitalize } == 'aBcabc' 
+end
+
+assert('String#sub!', '15.2.10.5.37') do
+  a = 'abcabc'
+  a.sub!('b', 'B')
+
+  b = 'abcabc'
+  b.sub!('b') { |w| w.capitalize }
+
+  a == 'aBcabc' && b == 'aBcabc'
+end
 
 assert('String#to_i', '15.2.10.5.38') do
   a = ''.to_i
