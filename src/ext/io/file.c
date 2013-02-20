@@ -173,8 +173,7 @@ mrb_stat(mrb_state *mrb, mrb_value file, struct stat *st)
     return fstat(fileno(fptr->f), st);
   }
   mrb_string_value(mrb, &file);
-  char* tmpStr = mrb_string_value_cstr(mrb, &file);
-  return STAT(tmpStr, st);
+  return STAT(mrb_str_to_cstr(mrb, file), st);
 }
 
 mrb_value
