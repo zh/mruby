@@ -4473,7 +4473,7 @@ parser_yylex(parser_state *p)
 #endif
 #ifdef ENABLE_REGEXP
 	p->regexp = 1;
-	p->sterm = '/';
+	p->sterm = term;
 #endif
 	return tREGEXP_BEG;
 
