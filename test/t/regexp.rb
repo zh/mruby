@@ -113,9 +113,6 @@ if Object.const_defined?(:Regexp)
     m[2] == "f"
   end
 
-  #assert('Regexp#source', '15.2.15.7.8') do
-  #end
-
   assert('Regexp#options (literal)') do
     re1 = /aaa/
     re2 = /aaa/i
@@ -140,6 +137,16 @@ if Object.const_defined?(:Regexp)
     re4.options == 4
   end
 
+  assert('Regexp#source') do
+    //.source == "" and
+    /foo|bar|baz/i.source == "foo|bar|baz" and
+    /.?a*b+(c)[^d]/.source == ".?a*b+(c)[^d]"
+  end
+
+  assert('Regexp#to_s') do
+    /foo|bar|baz/i.to_s == "(?i-mx:foo|bar|baz)" and
+    /a. b/mx.to_s == "(?mx-i:a. b)"
+  end
 
   assert('Regexp Literal (1)') do
     re1 = /aaa/
