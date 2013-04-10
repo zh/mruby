@@ -32,7 +32,7 @@ assert('String#==', '15.2.10.5.4') do
   'abc' == 'abc' and not 'abc' == 'cba'
 end
 
-# TODO: SEGFAULT ATM assert('String#=~', '15.2.10.5.5')
+# 'String#=~', '15.2.10.5.5' will be tested in mrbgems.
 
 assert('String#[]', '15.2.10.5.6') do
   # length of args is 1
@@ -49,7 +49,7 @@ assert('String#[]', '15.2.10.5.6') do
   e1 = 'abc'[1, 2]
 
   # args is RegExp
-  # TODO SEGFAULT ATM
+  # It will be tested in mrbgems.
 
   # args is String
   a3 = 'abc'['bc']
@@ -192,40 +192,15 @@ assert('String#eql?', '15.2.10.5.17') do
   'abc'.eql?('abc') and not 'abc'.eql?('cba')
 end
 
-if Object.const_defined?(:Regexp)
-  # TODO ATM broken assert('String#gsub', '15.2.10.5.18') do
-  assert('String#gsub with Regexp', '15.2.10.5.18') do
-    re = Regexp.compile('def')
-    result1 = 'abcdefg'.gsub(re, '!!')
-    re = Regexp.compile('b')
-    result2 = 'abcabc'.gsub(re, '<<\&>>')
-    re = Regexp.compile('x+(b+)')
-    result3 = 'xxbbxbb'.gsub(re, 'X<<\1>>')
-    result4 = '2.5'.gsub('.', ',')
-
-    result1 == "abc!!g" and
-    result2 == "a<<b>>ca<<b>>c" and
-    result3 == "X<<bb>>X<<bb>>" and
-    result4 == "2,5"
-  end
-
-  # TODO ATM broken assert('String#gsub!', '15.2.10.5.19') do
-  assert('String#gsub! with Regexp', '15.2.10.5.19') do
-    result1 = "String-String"
-    re = Regexp.compile('in.')
-    result1.gsub!(re, "!!")
-
-    result2 = "String-String"
-    re = Regexp.compile('in.')
-    result2.gsub!(re, '<<\&>>')
-
-    result1 == "Str!!-Str!!" and
-    result2 == "Str<<ing>>-Str<<ing>>"
-  end
-end # END: Object.const_defined?(:Regexp)
-
 assert('String#gsub', '15.2.10.5.18') do
-  'abcabc'.gsub('b', 'B') == 'aBcaBc' && 'abcabc'.gsub('b') { |w| w.capitalize } == 'aBcaBc' 
+  assert_equal('aBcaBc', 'abcabc'.gsub('b', 'B'), 'gsub without block')
+  assert_equal('aBcaBc', 'abcabc'.gsub('b'){|w| w.capitalize }, 'gsub with block')
+  assert_equal('$a$a$',  '#a#a#'.gsub('#', '$'), 'mruby/mruby#847')
+  assert_equal('$a$a$',  '#a#a#'.gsub('#'){|w| '$' }, 'mruby/mruby#847 with block')
+  assert_equal('$$a$$',  '##a##'.gsub('##', '$$'), 'mruby/mruby#847 another case')
+  assert_equal('$$a$$',  '##a##'.gsub('##'){|w| '$$' }, 'mruby/mruby#847 another case with block')
+  assert_equal('A',      'a'.gsub('a', 'A'))
+  assert_equal('A',      'a'.gsub('a'){|w| w.capitalize })
 end
 
 assert('String#gsub!', '15.2.10.5.19') do
@@ -235,7 +210,7 @@ assert('String#gsub!', '15.2.10.5.19') do
   b = 'abcabc'
   b.gsub!('b') { |w| w.capitalize }
 
-  a == 'aBcaBc' && b == 'aBcaBc' 
+  a == 'aBcaBc' && b == 'aBcaBc'
 end
 
 assert('String#hash', '15.2.10.5.20') do
@@ -276,7 +251,7 @@ assert('String#length', '15.2.10.5.26') do
   'abc'.length == 3
 end
 
-# TODO Broken ATM assert('String#match', '15.2.10.5.27') do
+# 'String#match', '15.2.10.5.27' will be tested in mrbgems.
 
 assert('String#replace', '15.2.10.5.28') do
   a = ''
@@ -304,24 +279,7 @@ assert('String#rindex', '15.2.10.5.31') do
     'abcabc'.rindex('a', 1) == 0 and 'abcabc'.rindex('a', 4) == 3
 end
 
-if Object.const_defined?(:Regexp)
-  # TODO Broken ATM assert('String#scan', '15.2.10.5.32') do
-  assert('String#scan', '15.2.10.5.32') do
-    re = Regexp.compile('..')
-    result1 = "foobar".scan(re)
-    re = Regexp.compile('ba.')
-    result2 = "foobarbazfoobarbazz".scan(re)
-    re = Regexp.compile('(.)')
-    result3 = "foobar".scan(re)
-    re = Regexp.compile('(ba)(.)')
-    result4 = "foobarbazfoobarbaz".scan(re)
-
-    result1 == ["fo", "ob", "ar"] and
-    result2 == ["bar", "baz", "bar", "baz"] and
-    result3 == [["f"], ["o"], ["o"], ["b"], ["a"], ["r"]] and
-    result4 == [["ba", "r"], ["ba", "z"], ["ba", "r"], ["ba", "z"]]
-  end
-end
+# 'String#scan', '15.2.10.5.32' will be tested in mrbgems.
 
 assert('String#size', '15.2.10.5.33') do
   'abc'.size == 3
@@ -345,7 +303,7 @@ assert('String#slice', '15.2.10.5.34') do
   e11 = e1.slice(0)
 
   # args is RegExp
-  # TODO SEGFAULT ATM
+  # It will be tested in mrbgems.
 
   # args is String
   a3 = 'abc'.slice('bc')
@@ -378,24 +336,6 @@ assert('String#slice!', '15.2.10.5.X') do
     v1 == '' and v2 == 'a' and v3 == nil
 end
 
-if Object.const_defined?(:Regexp)
-  assert('String#split', '15.2.10.5.35') do
-    ''.split(//)               == []                          and
-    ''.split(/x/)              == []                          and
-    'abc'.split(//)            == ['a', 'b', 'c']             and
-    'abc'.split(/,/)           == ['abc']                     and
-    'a1b23c45'.split(/\d/)     == ['a', 'b', '', 'c']         and
-    'a1b23c45'.split(/\d/, 0)  == ['a', 'b', '', 'c']         and
-    'a1b23c45'.split(/\d/, 1)  == ['a1b23c45']                and
-    'a1b23c45'.split(/\d/, 4)  == ['a', 'b', '', 'c45']       and
-    'a1b23c45'.split(/\d/, -4) == ['a', 'b', '', 'c', '', ''] and
-    'abc'.split(//, 2)         == ['a', 'bc']                 and
-    'a bc'.split(/\s*/)        == ['a', 'b', 'c']             and
-    ' abc  abc abc'.split(/ /) == ['', 'abc', '', 'abc', 'abc'] and
-    '1, 2.34,56, 7'.split(/,\s*/) == ['1', '2.34', '56', '7']
-  end
-end
-
 assert('String#split with non-Regexp separator') do
   r = false
   oldsep = $;
@@ -425,38 +365,10 @@ assert('String#split with non-Regexp separator') do
   r
 end
 
-if Object.const_defined?(:Regexp)
-  # TODO ATM broken assert('String#sub', '15.2.10.5.36') do
-  assert('String#sub with Regexp', '15.2.10.5.36') do
-    re = Regexp.compile('def')
-    result1 = 'abcdefg'.sub(re, '!!')
-    re = Regexp.compile('b')
-    result2 = 'abcabc'.sub(re, '<<\&>>')
-    re = Regexp.compile('x+(b+)')
-    result3 = 'xbbxbb'.sub(re, 'X<<\1>>')
-
-    result1 == "abc!!g" and
-    result2 == "a<<b>>cabc" and
-    result3 == "X<<bb>>xbb"
-  end
-
-  # TODO ATM broken assert('String#sub!', '15.2.10.5.37') do
-  assert('String#sub! with Regexp', '15.2.10.5.37') do
-    result1 = "String-String"
-    re = Regexp.compile('in.')
-    result1.sub!(re, "!!")
-
-    result2 = "String-String"
-    re = Regexp.compile('in.')
-    result2.sub!(re, '<<\&>>')
-
-    result1 == "Str!!-String" and
-    result2 == "Str<<ing>>-String"
-  end
-end # END: Object.const_defined?(:Regexp)
-
 assert('String#sub', '15.2.10.5.36') do
-  'abcabc'.sub('b', 'B') == 'aBcabc' && 'abcabc'.sub('b') { |w| w.capitalize } == 'aBcabc' 
+  'abcabc'.sub('b', 'B') == 'aBcabc' and
+    'abcabc'.sub('b') { |w| w.capitalize } == 'aBcabc' and
+    'aa#'.sub('#', '$') == 'aa$'
 end
 
 assert('String#sub!', '15.2.10.5.37') do
