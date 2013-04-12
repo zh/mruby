@@ -42,8 +42,8 @@ MRuby::Build.new do |conf|
   conf.gem "#{root}/mrbgems/mruby-hash-ext"
 
   # Use Random class
-  #conf.gem "#{root}/mrbgems/mruby-random"
-  
+  # conf.gem "#{root}/mrbgems/mruby-random"
+
   # No use eval method
   # conf.gem "#{root}/mrbgems/mruby-eval"
 
@@ -59,7 +59,14 @@ MRuby::Build.new do |conf|
   conf.gem :git => 'https://github.com/iij/mruby-syslog.git'
 
   # Generate binaries
-  # conf.bins = %w(mrbc mruby mirb)
+  # conf.bins = %w(mrbc)
+
+  # Generate mirb command
+  conf.gem "#{root}/mrbgems/mruby-bin-mirb"
+
+  # Generate mruby command
+  conf.gem "#{root}/mrbgems/mruby-bin-mruby"
+
 
   # C compiler settings
   # conf.cc do |cc|
