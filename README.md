@@ -75,7 +75,7 @@ $ cd test/posix   # test/posix ディレクトリへ移動
 $ sh all.sh       # test/posix 以下にある全てのテストを実行
 ```
 
- * 各種OSでのテスト結果を http://iij.github.com/mruby/report/ で公開しています
+ * 各種OSでのテスト結果を http://m.ruby.iijgio.com/ で公開しています
 
 # サンプルアプリケーション
 
