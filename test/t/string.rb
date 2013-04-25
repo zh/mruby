@@ -528,3 +528,11 @@ assert('String#getbyte') do
   bytes2 = [0xFF]
   assert_equal bytes2[0], str2.getbyte(0)
 end
+
+assert('String#dump') do
+  ("\1" * 100).dump     # should not raise an exception - regress #1210
+end
+
+assert('String#inspect') do
+  ("\1" * 100).inspect  # should not raise an exception - regress #1210
+end
