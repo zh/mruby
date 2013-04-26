@@ -208,6 +208,9 @@ mrb_value mrb_funcall_with_block(mrb_state*, mrb_value, mrb_sym, int, mrb_value*
 mrb_sym mrb_intern_cstr(mrb_state*,const char*);
 mrb_sym mrb_intern2(mrb_state*,const char*,size_t);
 mrb_sym mrb_intern_str(mrb_state*,mrb_value);
+mrb_value mrb_check_intern_cstr(mrb_state*,const char*);
+mrb_value mrb_check_intern(mrb_state*,const char*,size_t);
+mrb_value mrb_check_intern_str(mrb_state*,mrb_value);
 const char *mrb_sym2name(mrb_state*,mrb_sym);
 const char *mrb_sym2name_len(mrb_state*,mrb_sym,size_t*);
 mrb_value mrb_sym2str(mrb_state*,mrb_sym);
@@ -340,13 +343,6 @@ typedef enum call_type {
     CALL_TYPE_MAX
 } call_type;
 
-#ifndef ANYARGS
-# ifdef __cplusplus
-#   define ANYARGS ...
-# else
-#   define ANYARGS
-# endif
-#endif
 void mrb_define_alias(mrb_state *mrb, struct RClass *klass, const char *name1, const char *name2);
 const char *mrb_class_name(mrb_state *mrb, struct RClass* klass);
 void mrb_define_global_const(mrb_state *mrb, const char *name, mrb_value val);
