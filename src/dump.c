@@ -12,8 +12,7 @@
 #include "mruby/irep.h"
 #include "mruby/numeric.h"
 
-static size_t
-get_irep_record_size(mrb_state *mrb, mrb_irep *irep);
+static size_t get_irep_record_size(mrb_state *mrb, mrb_irep *irep);
 
 static uint32_t
 get_irep_header_size(mrb_state *mrb)

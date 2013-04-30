@@ -227,10 +227,11 @@ void *mrb_malloc(mrb_state*, size_t);
 void *mrb_calloc(mrb_state*, size_t, size_t);
 void *mrb_realloc(mrb_state*, void*, size_t);
 struct RBasic *mrb_obj_alloc(mrb_state*, enum mrb_vtype, struct RClass*);
-void *mrb_free(mrb_state*, void*);
+void mrb_free(mrb_state*, void*);
 
 mrb_value mrb_str_new(mrb_state *mrb, const char *p, size_t len);
 mrb_value mrb_str_new_cstr(mrb_state*, const char*);
+mrb_value mrb_str_new_static(mrb_state *mrb, const char *p, size_t len);
 
 mrb_state* mrb_open(void);
 mrb_state* mrb_open_allocf(mrb_allocf, void *ud);
@@ -242,7 +243,7 @@ mrb_value mrb_run(mrb_state*, struct RProc*, mrb_value);
 
 void mrb_p(mrb_state*, mrb_value);
 mrb_int mrb_obj_id(mrb_value obj);
-mrb_sym mrb_to_id(mrb_state *mrb, mrb_value name);
+mrb_sym mrb_obj_to_sym(mrb_state *mrb, mrb_value name);
 
 int mrb_obj_eq(mrb_state*, mrb_value, mrb_value);
 int mrb_obj_equal(mrb_state*, mrb_value, mrb_value);
