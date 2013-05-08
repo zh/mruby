@@ -18,6 +18,7 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 #endif
+#include <mruby/string.h>
 
 #ifdef ENABLE_REQUIRE
 #include "mruby/array.h"
@@ -25,9 +26,6 @@
 #include "mruby/variable.h"
 extern mrb_value mrb_file_exist(mrb_state *mrb, mrb_value fname);
 #endif
-
-#ifndef ENABLE_STDIO
-#include <mruby/string.h>
 
 static void
 p(mrb_state *mrb, mrb_value obj, int prompt)
