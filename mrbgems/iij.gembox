@@ -45,17 +45,24 @@ MRuby::GemBox.new do |conf|
   conf.gem :git => 'https://github.com/iij/mruby-digest.git'
   conf.gem :git => 'https://github.com/iij/mruby-dir.git'
   conf.gem :git => 'https://github.com/iij/mruby-env.git'
+  conf.gem :git => 'https://github.com/iij/mruby-errno.git'
   conf.gem :git => 'https://github.com/iij/mruby-io.git'
+  conf.gem :git => 'https://github.com/iij/mruby-mock.git'
   conf.gem :git => 'https://github.com/iij/mruby-mtest.git'
   conf.gem :git => 'https://github.com/iij/mruby-pack.git'
   conf.gem :git => 'https://github.com/iij/mruby-process.git'
   conf.gem :git => 'https://github.com/iij/mruby-regexp-pcre.git'
+  conf.gem :git => 'https://github.com/iij/mruby-require.git'
   conf.gem :git => 'https://github.com/iij/mruby-simple-random.git'
   conf.gem :git => 'https://github.com/iij/mruby-syslog.git'
-  
+  conf.gem :git => 'https://github.com/iij/mruby-tempfile.git'
+
   # Generate mirb command
   conf.gem "#{root}/mrbgems/mruby-bin-mirb"
 
   # Generate mruby command
   conf.gem "#{root}/mrbgems/mruby-bin-mruby"
+
+  # update gems
+  conf.gem :git => 'https://github.com/mattn/mruby-updategems.git'
 end
