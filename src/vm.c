@@ -215,7 +215,7 @@ cipush(mrb_state *mrb)
     size_t size = ci - c->cibase;
 
     c->cibase = (mrb_callinfo *)mrb_realloc(mrb, c->cibase, sizeof(mrb_callinfo)*size*2);
-    ci = c->cibase + size;
+    c->ci = ci = c->cibase + size;
     c->ciend = c->cibase + size * 2;
   }
   ci = ++c->ci;
@@ -920,10 +920,12 @@ mrb_run(mrb_state *mrb, struct RProc *proc, mrb_value self)
         if (mrb->exc) goto L_RAISE;
         /* pop stackpos */
         ci = mrb->c->ci;
-        if (!MRB_PROC_CFUNC_P(ci[-1].proc)) {
-          irep = ci[-1].proc->body.irep;
-          pool = irep->pool;
-          syms = irep->syms;
+        if (!ci->target_class) { /* return from context modifying method (resume/yield) */
+          if (!MRB_PROC_CFUNC_P(ci[-1].proc)) {
+            irep = ci[-1].proc->body.irep;
+            pool = irep->pool;
+            syms = irep->syms;
+          }
         }
         regs = mrb->c->stack = mrb->c->stbase + ci->stackidx;
         pc = ci->pc;
