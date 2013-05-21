@@ -585,14 +585,14 @@ mrb_value
 mrb_vm_iv_get(mrb_state *mrb, mrb_sym sym)
 {
   /* get self */
-  return mrb_iv_get(mrb, mrb->stack[0], sym);
+  return mrb_iv_get(mrb, mrb->c->stack[0], sym);
 }
 
 void
 mrb_vm_iv_set(mrb_state *mrb, mrb_sym sym, mrb_value v)
 {
   /* get self */
-  mrb_iv_set(mrb, mrb->stack[0], sym, v);
+  mrb_iv_set(mrb, mrb->c->stack[0], sym, v);
 }
 
 static int
@@ -769,9 +769,9 @@ mrb_cv_defined(mrb_state *mrb, mrb_value mod, mrb_sym sym)
 mrb_value
 mrb_vm_cv_get(mrb_state *mrb, mrb_sym sym)
 {
-  struct RClass *c = mrb->ci->proc->target_class;
+  struct RClass *c = mrb->c->ci->proc->target_class;
 
-  if (!c) c = mrb->ci->target_class;
+  if (!c) c = mrb->c->ci->target_class;
 
   return mrb_mod_cv_get(mrb, c, sym);
 }
@@ -779,9 +779,9 @@ mrb_vm_cv_get(mrb_state *mrb, mrb_sym sym)
 void
 mrb_vm_cv_set(mrb_state *mrb, mrb_sym sym, mrb_value v)
 {
-  struct RClass *c = mrb->ci->proc->target_class;
+  struct RClass *c = mrb->c->ci->proc->target_class;
 
-  if (!c) c = mrb->ci->target_class;
+  if (!c) c = mrb->c->ci->target_class;
   while (c) {
     if (c->iv) {
       iv_tbl *t = c->iv;
@@ -794,7 +794,7 @@ mrb_vm_cv_set(mrb_state *mrb, mrb_sym sym, mrb_value v)
     }
     c = c->super;
   }
-  c = mrb->ci->target_class;
+  c = mrb->c->ci->target_class;
   if (!c->iv) {
     c->iv = iv_new(mrb);
   }
@@ -874,11 +874,11 @@ mrb_const_get(mrb_state *mrb, mrb_value mod, mrb_sym sym)
 mrb_value
 mrb_vm_const_get(mrb_state *mrb, mrb_sym sym)
 {
-  struct RClass *c = mrb->ci->proc->target_class;
+  struct RClass *c = mrb->c->ci->proc->target_class;
 
-  if (!c) c = mrb->ci->target_class;
+  if (!c) c = mrb->c->ci->target_class;
   if (c) {
-    struct RClass *c2 = c;
+    struct RClass *c2;
     mrb_value v;
 
     if (c->iv && iv_get(mrb, c->iv, sym, &v)) {
@@ -906,9 +906,9 @@ mrb_const_set(mrb_state *mrb, mrb_value mod, mrb_sym sym, mrb_value v)
  void
 mrb_vm_const_set(mrb_state *mrb, mrb_sym sym, mrb_value v)
 {
-  struct RClass *c = mrb->ci->proc->target_class;
+  struct RClass *c = mrb->c->ci->proc->target_class;
 
-  if (!c) c = mrb->ci->target_class;
+  if (!c) c = mrb->c->ci->target_class;
   mrb_obj_iv_set(mrb, (struct RObject*)c, sym, v);
 }
 
