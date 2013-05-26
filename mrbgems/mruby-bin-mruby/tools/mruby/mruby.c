@@ -201,8 +201,7 @@ main(int argc, char **argv)
       mrb_run(mrb, mrb_proc_new(mrb, mrb->irep[n]), mrb_top_self(mrb));
       n = 0;
       if (mrb->exc) {
-        mrb_print_backtrace(mrb);
-        p(mrb, mrb_obj_value(mrb->exc));
+        mrb_print_error(mrb);
         n = -1;
       }
     }
@@ -233,8 +232,7 @@ main(int argc, char **argv)
     mrbc_context_free(mrb, c);
     if (mrb->exc) {
       if (!mrb_undef_p(v)) {
-        mrb_print_backtrace(mrb);
-        p(mrb, mrb_obj_value(mrb->exc));
+        mrb_print_error(mrb);
       }
       n = -1;
     }
