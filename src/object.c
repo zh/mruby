@@ -114,7 +114,7 @@ nil_to_a(mrb_state *mrb, mrb_value obj)
 static mrb_value
 nil_to_f(mrb_state *mrb, mrb_value obj)
 {
-    return mrb_float_value(0.0);
+    return mrb_float_value(mrb, 0.0);
 }
 
 /*
