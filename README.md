@@ -1,91 +1,53 @@
-# このリポジトリについて
+# iij/mruby
 
-mruby に対して、主に UNIX 環境に依存する機能を追加した fork です。
+## What's this?
 
-(English translation is under way: https://github.com/iij/mruby/wiki/README.md.en )
+iij/mruby is a fork of [mruby](https://github.com/mruby/mruby), 
+a lightweight implementation of the [Ruby](http://www.ruby-lang.org/) language.
+This fork adds a lot of features to be run on IIJ's Internet router products:
+[SEIL series](http://seil.jp/) and [SA-W1](http://www.sacm.jp/#saw1).
 
-# iij/mrubyの拡張部分
+## Features
 
- * 追加したクラス/モジュール
-   * Errno::EXXX
-   * File: ::open ::umask ::unlink ::delete ::rename ::exist? ::exists?
-           ::dirname ::basename ::size #path
-   * IO: ::open ::sysopen ::popen ::select
-         #close #closed? #each #each_byte #each_line #read #sync #sync=
-         #write #to_io
-   * IPAddr: ::new #<=> #family #hton #inspect #ipv4? #ipv6? #mask #to\_s #| #~
-   * Regexp: ::compile ::last\_match #match
-   * TCPSocket: ::new ::open
-   * UNIXSocket: #addr ::new ::open #peeraddr
-   * SystemCallError
+The majority of features developed in this repository are provided as mrbgems now.
+These mrbgems can be used with either
+[mruby/mruby](https://github.com/mruby/mruby) or [iij/mruby](https://github.com/iij/mruby).
 
- * 拡張したクラス/モジュール
-   * Array: #- #& #| #uniq #uniq! #flatten #flatten!
-   * Kernel: #exit #load #require #sleep #system
-     * load, require については https://github.com/iij/mruby/wiki/require も参照してください
-   * String: #lstrip #rstrip #strip #gsub #gsub! #sub #sub! #scan
-
- * その他の拡張
-   * 正規表現リテラル
-   * C + Ruby の両方の言語で実装可能な拡張モジュール
-
-http://iij.github.com/mruby/lib/ からリファレンス形式でも参照できます。
-ハイライトされているクラス/メソッドが iij/mruby で利用可能なものです。
-
-# mrbgem
-
-mrbgemの形で実装した機能拡張の多くは、mruby/mrubyでも利用可能です。
-
-* https://github.com/iij/mruby-mtest
-   * MiniTestライクなTestingFramework
-* https://github.com/iij/mruby-dir (iij/mruby のみサポート)
-   * Dir: ::[] ::chdir ::chroot ::glob ::home #path #to\_path #inspect 以外
-* https://github.com/iij/mruby-digest
-   * Digest::MD5/RIPEMD160/SHA1/SHA256/SHA384/SHA512
-   * Digest::HMAC: #reset 以外
-* https://github.com/iij/mruby-process
-   * Process: ::kill ::pid ::ppid
-* https://github.com/iij/mruby-pack
-   * Array: #pack
-   * String: #unpack
-* https://github.com/iij/mruby-syslog
-   * Syslog: ::open ::close ::log ::opened? ::ident ::options ::facility
-* https://github.com/iij/mruby-env
-   * ENV: ::[] ::[]= ::clear ::delete ::inspect ::keys ::size ::store
-          ::to\_a ::to\_hash ::to\_s ::values
-* https://github.com/iij/mruby-simple-random
-   * Kernel: #rand #srand
+| Repository | Description |
+|:-----------|:------------|
+| [mruby-digest](https://github.com/iij/mruby-digest) | [Digest](http://www.ruby-doc.org/stdlib-2.0/libdoc/digest/rdoc/Digest.html) module |
+| [mruby-dir](https://github.com/iij/mruby-dir) | [Dir](http://www.ruby-doc.org/core-2.0/Dir.html) class |
+| [mruby-env](https://github.com/iij/mruby-env) | [ENV](http://www.ruby-doc.org/core-2.0/ENV.html) object |
+| [mruby-errno](https://github.com/iij/mruby-errno) | [Errno](http://www.ruby-doc.org/core-2.0/Errno.html) module |
+| [mruby-io](https://github.com/iij/mruby-io) | [IO](http://www.ruby-doc.org/core-2.0/IO.html) and [File](http://www.ruby-doc.org/core-2.0/File.html) classes |
+| [mruby-mock](https://github.com/iij/mruby-mock) | mock framework to support method stub |
+| [mruby-mtest](https://github.com/iij/mruby-mtest) | unittesting framework like MiniTest |
+| [mruby-pack](https://github.com/iij/mruby-pack) | [Array#pack](http://www.ruby-doc.org/core-2.0/Array.html#pack) and [String#unpack](http://www.ruby-doc.org/core-2.0/String.html#unpack)
+| [mruby-process](https://github.com/iij/mruby-process) | [Process](http://www.ruby-doc.org/core-2.0/Process.html) module |
+| [mruby-regexp-pcre](https://github.com/iij/mruby-regexp-pcre) | [Regexp](http://www.ruby-doc.org/core-2.0/Regexp.html) and [MatchData](http://www.ruby-doc.org/core-2.0/Regexp.html) classes utilizing [PCRE](http://www.pcre.org/) library |
+| [mruby-require](https://github.com/iij/mruby-require) | [Kernel#require](http://www.ruby-doc.org/core-2.0/Kernel.html#method-i-require) |
+| [mruby-simple-random](https://github.com/iij/mruby-simple-random) | smaller alternative of mruby-random |
+| [mruby-socket](https://github.com/iij/mruby-socket) | BSD socket API classes including [Socket](http://www.ruby-doc.org/stdlib-2.0/libdoc/socket/rdoc/Socket.html) |
+| [mruby-syslog](https://github.com/iij/mruby-syslog) | [Syslog](http://www.ruby-doc.org/stdlib-2.0/libdoc/syslog/rdoc/Syslog.html) class |
+| [mruby-tempfile](https://github.com/iij/mruby-tempfile) | [Tempfile](http://www.ruby-doc.org/stdlib-2.0/libdoc/tempfile/rdoc/Tempfile.html) class |
 
 
-# ブランチ
+## Branch Policy
 
- * master : mruby/mruby の master と同じです。毎日同期します。
- * iij : 主な開発ブランチです。master (=mruby/mruby) をベースに
-   UNIX プラットホームに依存した拡張を含みます。
- * pr-hogehoge : master から分岐した、pull-request 送信専用のブランチです。
-   ひとつの pull-request に対してひとつの pr-hogehoge ブランチを作成します。
+ * master : tracking upstream (mruby/mruby), synchronized every morning.
+ * iij : main development branch
+ * s1 : stable branch (#1)
+ * (else) : for pull-request, etc.
 
-# 機能拡張に関連するテスト
+## Continuous Integration
 
-UNIX 環境に依存する機能のテストコードは test/posix ディレクトリにあり、
-以下のコマンドで実行できます。
+We run automated tests per commit on a variety of platforms including CentOS6/i386, FreeBSD/amd64, NetBSD/arm, etc.
+Test reports are available on http://m.ruby.iijgio.com/ .
+If you want to run the tests on your platform, try the following commands:
 
-```
-$ cd test/posix   # test/posix ディレクトリへ移動
-$ sh all.sh       # test/posix 以下にある全てのテストを実行
-```
+      $ rake test
+      $ ./test/posix/all.sh
 
- * 各種OSでのテスト結果を http://m.ruby.iijgio.com/ で公開しています
+## License
 
-# サンプルアプリケーション
-
-このリポジトリで追加した拡張を利用した mruby アプリケーションのサンプルを
-app ディレクトリ以下に置いています。
-
-# ライセンス
-
-オリジナル mruby と同じです。
-
-# 謝辞
- * 正規表現リテラルの実装には、以下のレポジトリのコードを一部流用させていただきました。
-    * https://github.com/junjis0203/mruby
+This software is licensed under the same license terms of the original mruby.
